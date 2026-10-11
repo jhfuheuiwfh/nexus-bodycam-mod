@@ -5,7 +5,7 @@
 **Turn Minecraft into a first-person bodycam experience.**
 Chest-mounted camera, breathing you can hear, lens effects and full weapon realism.
 
-`Minecraft 1.20.1` · `Fabric` · `Client-side` · `v1.4.2+1.20.1`
+`Minecraft 1.20.1` · `Fabric` · `Client-side` · `v1.4.3+1.20.1`
 
 [![License: GPL v3](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 [![Minecraft](https://img.shields.io/badge/Minecraft-1.20.1-brightgreen.svg)](https://fabricmc.net/game/version/1.20.1/)
@@ -71,10 +71,10 @@ Designed to work *with* bodycam shaderpacks: the mod owns the **camera motion**,
 
 ## Installation
 
-📥 **Download:** [**latest release**](../../releases/latest) → `NEXUS-bodycam-1.4.2+1.20.1.jar`
+📥 **Download:** [**latest release**](../../releases/latest) → `NEXUS-bodycam-1.4.3+1.20.1.jar`
 
 1. Install **[Fabric Loader](https://fabricmc.net/use/installer/)** for Minecraft **1.20.1**.
-2. Drop `NEXUS-bodycam-1.4.2+1.20.1.jar` into your `mods` folder.
+2. Drop `NEXUS-bodycam-1.4.3+1.20.1.jar` into your `mods` folder.
 3. *(Optional)* **[Mod Menu](https://modrinth.com/mod/modmenu)** for the in-game config screen, **[TACZ](https://modrinth.com/mod/tacz)** for weapon realism, **[Iris](https://modrinth.com/mod/iris)** for shaders.
 
 **Requirements:** Fabric Loader ≥ 0.15.11 · Fabric API · Java 17+.
@@ -97,7 +97,7 @@ cd nexus-bodycam-mod
 ./gradlew build          # Windows: gradlew.bat build
 ```
 
-The result is `build/libs/NEXUS-bodycam-1.4.2+1.20.1.jar`.
+The result is `build/libs/NEXUS-bodycam-1.4.3+1.20.1.jar`.
 More detail: **[Building Wiki page](../../wiki/Building)**.
 
 ---

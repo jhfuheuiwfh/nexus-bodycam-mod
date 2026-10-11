@@ -6,9 +6,10 @@
   "description": "Realistic bodycam-style camera with temporal effects, post-processing, DOF and tactical HUD for Minecraft 1.20.1",
   "authors": ["Adriano"],
   "contact": {
-    "sources": "https://github.com/seu-usuario/bodycam"
+    "sources": "https://github.com/jhfuheuiwfh/nexus-bodycam-mod",
+    "issues": "https://github.com/jhfuheuiwfh/nexus-bodycam-mod/issues"
   },
-  "license": "MIT",
+  "license": "GPL-3.0",
   "icon": "assets/bodycam/icon.png",
   "environment": "client",
   "entrypoints": {
@@ -28,7 +29,7 @@
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.sources": "https://github.com/seu-usuario/bodycam"
+        "modmenu.sources": "https://github.com/jhfuheuiwfh/nexus-bodycam-mod"
       },
       "badges": []
     }

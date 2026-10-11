@@ -703,3 +703,36 @@ all fucked up… there's no scroll (bottom parts cut off!)".
 
 ---
 
+
+### Session 2026-10-11 — vignette blur (bodycam defocus) — v1.4.3+1.20.1
+
+- **Request (user):** "a vignette has to be blurred (like a real bodycam)".
+- **New config `vignetteBlur` (0..1, default 0.6)** — scales the effect; `0` turns
+  it off, `1` is full defocus at the corner.
+- **Shader `bodycam:post`**: new uniform `VignetteBlur`. Just before the vignette
+  multiply, a **12-tap golden-angle disc blur** is mixed in under the mask
+  `smoothstep(0.45, 1.05, r) * VignetteBlur`: the frame is sharp in the centre and
+  progressively goes out of focus toward the border, like a real wide bodycam
+  lens. The disc is aspect-corrected (round in pixels), clamped to the screen, the
+  radius is `0.035 * mask` (~3.5 % of the screen at the corner) and the whole block
+  is skipped when the mask is negligible (cost ≈ 0 in the centre of the frame).
+- **GUI**: new Post-FX slider `Vignette Blur`
+  (`sl("vignetteBlur", 0.0, 1.0)` + getter/setter cases);
+  lang keys `bodycam.config.vignetteBlur` (`en_us` / `pt_br`).
+- **`fabric.mod.json`**: `license` `MIT` → `GPL-3.0`; `contact.sources` /
+  `modmenu.sources` placeholder (`seu-usuario/bodycam`) → the real repository; new
+  `contact.issues`.
+- **Version bump `1.4.2` → `1.4.3+1.20.1`** (AVISO GERAL: `1.0.x` = small fix).
+- **Build of this session:**
+  - `gradlew.bat clean build --no-daemon` — **BUILD SUCCESSFUL** (1 m 46 s).
+  - Jar: `NEXUS-bodycam-1.4.3+1.20.1.jar` — **SHA256**
+    `D48FE4785AC0A53371DFF1C862BB48408170E20FA0DEF9AE4646F19EEEB49BFD` (2 378 260 bytes).
+  - Verified inside the jar: `version = 1.4.3+1.20.1`, `VignetteBlur` uniform and
+    the blur block present in `post.fsh`.
+- **Pending**: playtest of the vignette blur. ⚠️ The old `1.4.2` jar was still
+  locked in `mods` (game running) — **it must be removed before the next launch**
+  or Fabric will see two `bodycam` jars.
+- **Docs**: README / MODRINTH / TODO / DEVNOTES / wiki / this changelog updated to
+  `1.4.3`.
+
+---

@@ -102,7 +102,7 @@ Settings save to `config/bodycam.json` with validation — invalid or missing va
 - **Diagnostics**: optional `[diag]` log line every 60 ticks (steps, cadence, breath rate, spring values) for debugging and tuning.
 - Lightweight: a single singleton state object and a handful of mixins; no per-tick world scans.
 
-## Tested on (v1.4.2+1.20.1)
+## Tested on (v1.4.3+1.20.1)
 
 Measured in-game with **every Post-Effect enabled**:
 
@@ -119,7 +119,7 @@ Measured in-game with **every Post-Effect enabled**:
 ## Installation
 
 1. Install **Fabric Loader** for Minecraft 1.20.1.
-2. Drop `NEXUS-bodycam-1.4.2+1.20.1.jar` into your `mods` folder.
+2. Drop `NEXUS-bodycam-1.4.3+1.20.1.jar` into your `mods` folder.
 3. (Optional) Install **Mod Menu** to access the config screen from the mods list, and **TACZ** for weapon realism.
 
 **Requirements:** Fabric Loader ≥ 0.15.11 · Minecraft 1.20.1 · Fabric API. Mod Menu and TACZ are optional.

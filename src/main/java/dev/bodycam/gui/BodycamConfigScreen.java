@@ -160,7 +160,7 @@ public class BodycamConfigScreen extends Screen {
         sl("lensProfileStrength", 0.0, 1.5);   tg("dustEnabled");
         sl("dustStrength", 0.0, 1.5);          tg("criticalCamEnabled");
         sl("criticalStrength", 0.0, 2.0);      tg("motionBlurEnabled");
-        sl("motionBlurStrength", 0.0, 1.5);
+        sl("motionBlurStrength", 0.0, 1.5);        sl("vignetteBlur", 0.0, 1.0);
 
         hdr("water");
         full("waterEnabled");
@@ -291,6 +291,7 @@ public class BodycamConfigScreen extends Screen {
             case "dustStrength" -> config.dustStrength;
             case "criticalStrength" -> config.criticalStrength;
             case "motionBlurStrength" -> config.motionBlurStrength;
+            case "vignetteBlur" -> config.vignetteBlur;
             case "chestCamHeight" -> config.chestCamHeight;
             case "chestCamPitch" -> config.chestCamPitch;
             case "fovWideMult" -> config.fovWideMult;
@@ -342,6 +343,7 @@ public class BodycamConfigScreen extends Screen {
             case "dustStrength" -> config.dustStrength = v;
             case "criticalStrength" -> config.criticalStrength = v;
             case "motionBlurStrength" -> config.motionBlurStrength = v;
+            case "vignetteBlur" -> config.vignetteBlur = v;
             case "chestCamHeight" -> config.chestCamHeight = v;
             case "chestCamPitch" -> config.chestCamPitch = v;
             case "fovWideMult" -> config.fovWideMult = v;

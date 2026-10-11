@@ -56,6 +56,7 @@
   "bodycam.config.vignetteMech": "Vignette Mech",
   "bodycam.config.vignetteFloor": "Vignette Floor",
   "bodycam.config.vignetteCenterGain": "Vignette Center",
+  "bodycam.config.vignetteBlur": "Vignette Blur",
   "bodycam.config.chromaticAberration": "Chrom. Aberration",
   "bodycam.config.lensDirtIntensity": "Lens Dirt Intensity",
   "bodycam.config.lensDirtVeiling": "Lens Dirt Veiling",

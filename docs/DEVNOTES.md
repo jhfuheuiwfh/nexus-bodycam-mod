@@ -13,8 +13,8 @@
 > **full TACZ integration** (gun spring + view smoothing),
 > compatible with your **Bodycam Shaders**, and with **its own menu in Mod Menu**.
 >
-> **Current version: `1.4.2+1.20.1`** — installed build:
-> `sha256 5B0120B49A82046104EAEE6B891675D75CFCE8AEDB16C3D4C55398A31C7360D8` (2 377 730 bytes)
+> **Current version: `1.4.3+1.20.1`** — installed build:
+> `sha256 D48FE4785AC0A53371DFF1C862BB48408170E20FA0DEF9AE4646F19EEEB49BFD` (2 378 260 bytes)
 
 ---
 
@@ -70,7 +70,7 @@ $env:JAVA_HOME='D:\jdk-21.0.11+10'
 & 'C:\Users\Adriano\AppData\Local\Temp\opencode\gradle-8.5\bin\gradle.bat' clean build --no-daemon --console=plain
 ```
 
-Expected output: `build\libs\NEXUS-bodycam-1.4.2+1.20.1.jar`
+Expected output: `build\libs\NEXUS-bodycam-1.4.3+1.20.1.jar`
 
 Installation: copy to
 `C:\Users\Adriano\AppData\Roaming\FreesmLauncher\instances\1.20.1\minecraft\mods\`
@@ -102,7 +102,7 @@ yarn_mappings=1.20.1+build.10
 loader_version=0.15.11
 fabric_version=0.92.2+1.20.1
 modmenu_version=7.2.2
-mod_version=1.4.2+1.20.1
+mod_version=1.4.3+1.20.1
 maven_group=dev.bodycam
 archives_base_name=NEXUS-bodycam
 ```
@@ -366,7 +366,7 @@ value → default, NPE guarded, ranges clamped.
 ```
 bodycam/
 ├── build.gradle                    # modCompileOnly fileTree(libs/*.jar) for TACZ
-├── gradle.properties               # mod_version=1.4.2+1.20.1
+├── gradle.properties               # mod_version=1.4.3+1.20.1
 ├── settings.gradle
 ├── libs/
 │   └── TACZ-Refabricated-….jar     # EDITED COPY (manifest + 4 classes removed)

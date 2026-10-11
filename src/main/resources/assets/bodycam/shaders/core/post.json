@@ -25,6 +25,7 @@
         { "name": "VignetteMech", "type": "float", "count": 1, "values": [ 0.35 ] },
         { "name": "VignetteFloor", "type": "float", "count": 1, "values": [ 0.12 ] },
         { "name": "VignetteCenterGain", "type": "float", "count": 1, "values": [ 1.15 ] },
+        { "name": "VignetteBlur", "type": "float", "count": 1, "values": [ 0.6 ] },
         { "name": "CAStrength", "type": "float", "count": 1, "values": [ 0.003 ] },
         { "name": "LensDirtIntensity", "type": "float", "count": 1, "values": [ 1.5 ] },
         { "name": "LensDirtVeiling", "type": "float", "count": 1, "values": [ 0.06 ] },

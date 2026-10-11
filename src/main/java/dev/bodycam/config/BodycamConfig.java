@@ -63,6 +63,8 @@ public class BodycamConfig {
     public double vignetteMech = 0.35;
     public double vignetteFloor = 0.12;
     public double vignetteCenterGain = 1.15;
+    // v1.4.3 — bodycam edge blur: the frame falls out of focus toward the vignette
+    public double vignetteBlur = 0.6;
     public double chromaticAberration = 0.003;
     public double lensDirtIntensity = 1.0;
     public double lensDirtVeiling = 0.02;
@@ -308,6 +310,7 @@ public class BodycamConfig {
         vignetteMech = clamp(vignetteMech, 0.0, 1.0);
         vignetteFloor = clamp(vignetteFloor, 0.0, 0.5);
         vignetteCenterGain = clamp(vignetteCenterGain, 1.0, 2.0);
+        vignetteBlur = clamp(vignetteBlur, 0.0, 1.0);
         chromaticAberration = clamp(chromaticAberration, 0.0, 0.01);
         lensDirtIntensity = clamp(lensDirtIntensity, 0.0, 5.0);
         lensDirtVeiling = clamp(lensDirtVeiling, 0.0, 0.3);

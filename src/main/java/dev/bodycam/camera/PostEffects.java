@@ -209,6 +209,8 @@ public class PostEffects {
         if (u != null) u.set((float) cfg.vignetteFloor);
         u = postShader.getUniform("VignetteCenterGain");
         if (u != null) u.set((float) cfg.vignetteCenterGain);
+        u = postShader.getUniform("VignetteBlur");
+        if (u != null) u.set((float) cfg.vignetteBlur);
 
         u = postShader.getUniform("CAStrength");
         if (u != null) u.set((float) (cfg.chromaticAberration * qs));

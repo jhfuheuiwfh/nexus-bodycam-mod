@@ -2,7 +2,7 @@
 
 # 🗺️ NEXUS Bodycam — TODO & Roadmap
 
-**Current version:** `1.4.2+1.20.1` · [Repository](../../) · [Issues](../../issues) · [Wiki](../../wiki)
+**Current version:** `1.4.3+1.20.1` · [Repository](../../) · [Issues](../../issues) · [Wiki](../../wiki)
 
 </div>
 
@@ -37,6 +37,7 @@
 - [x] Lens ghosting, lens profile, volumetric dust, critical damage camera (C7)
 - [x] Angular motion blur (C8)
 - [x] Realistic water: waves, caustics, refraction, fog/tint
+- [x] **Vignette blur** (v1.4.3) — 12-tap defocus growing toward the frame border
 
 </details>
 
@@ -82,6 +83,8 @@
 
 The features below are **implemented but not fully verified in-game**:
 
+- [ ] **v1.4.3** — vignette blur: edges of the frame look out of focus (bodycam feel);
+      slider *Post-FX → Vignette Blur* (0 = off … 1 = full), default 0.6
 - [ ] **v1.4.2** — scroll the config screen top→bottom; aim UP and mine: the cracking block must be the one under the crosshair (chest cam ON *and* OFF)
 - [ ] Breathing (sound + visual), sprint exhaustion at 5 s / 20 s
 - [ ] TACZ feel: spring, lowering, sway, recoil

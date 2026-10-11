@@ -12,6 +12,7 @@ uniform float VignetteCosPow;
 uniform float VignetteMech;
 uniform float VignetteFloor;
 uniform float VignetteCenterGain;
+uniform float VignetteBlur;
 uniform float CAStrength;
 uniform float LensDirtIntensity;
 uniform float LensDirtVeiling;
@@ -187,6 +188,28 @@ void main() {
             float band = smoothstep(0.45, 0.78, s) * LensSmudge;
             vec3 smear = texture(ScreenTex, clamp(distortedUV + vec2(0.004, 0.0012) * band, 0.0, 1.0)).rgb;
             color.rgb = mix(color.rgb, smear * 1.04 + 0.015, band * 0.5);
+        }
+
+        // v1.4.3 — bodycam edge blur: a real wide lens goes out of focus toward
+        // the frame border, so the periphery (the vignette ring) is genuinely
+        // blurred. 12-tap golden-angle disc, radius grows with the radius and
+        // with VignetteBlur (0 = off, 1 = full defocus at the corner).
+        if (VignetteBlur > 0.001) {
+            float rr = length(duv) * 1.4142;
+            float edgeMask = smoothstep(0.45, 1.05, rr) * clamp(VignetteBlur, 0.0, 1.0);
+            if (edgeMask > 0.003) {
+                float radius = 0.035 * edgeMask;          // ~3.5% of the screen at the corner
+                vec2 px2uv = vec2(ScreenSize.y / max(ScreenSize.x, 1.0), 1.0); // keep the disc round
+                vec3 sum = vec3(0.0);
+                for (int i = 0; i < 12; i++) {
+                    float fi = float(i);
+                    float ang = fi * 2.39996323;           // golden angle
+                    float ring = sqrt((fi + 0.5) / 12.0);  // uniform disc sampling
+                    vec2 o = vec2(cos(ang) * px2uv.x, sin(ang)) * ring * radius;
+                    sum += texture(ScreenTex, clamp(distortedUV + o, 0.0, 1.0)).rgb;
+                }
+                color.rgb = mix(color.rgb, sum / 12.0, edgeMask);
+            }
         }
 
         float vig = vignette(distortedUV, VignetteCosPow, VignetteMech, VignetteFloor, VignetteCenterGain);
