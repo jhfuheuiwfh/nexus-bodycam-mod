@@ -747,3 +747,37 @@ all fucked up… there's no scroll (bottom parts cut off!)".
   cleanup is ever wanted).
 
 ---
+
+### Session 2026-10-11 (cont. 3) — vignette blur FIX: the vignette itself is blurred now
+
+- **Feedback (user)**: with `vignetteBlur = 1.0` nothing visible changed —
+  "the base vignette's edges are smooth, not blurred".
+- **Root cause**: the defocus pass ran **before** the vignette multiply and its
+  taps sampled the raw `ScreenTex`, so the dark ring was painted *on top of* an
+  already-blurred image — its contour could never smear. The mask was also weak
+  right where it matters (edge midpoints: mix ~0.4, radius ~15 px), which is why
+  it read as "nothing happened".
+- **Fix (`post.fsh`)**: order reversed — **vignette first, defocus after**. Each
+  of the 12 golden-angle taps now re-applies `vignette(suv, ...)` + `Exposure` at
+  its own position, so the dark contour genuinely bleeds into the image (real
+  bodycam periphery). Mask starts earlier: `smoothstep(0.40, 1.05, r)`; radius
+  up to `0.045 * mask` (~48 px at the corner with the slider at 1.0).
+- **AUTO SAVE (`BodycamConfigScreen`)** — user request: `setVal()`, `setToggle()`
+  and `close()` now call `config.save()`. Previously only the *Save* button wrote
+  the file, and since `PostEffects` reads the config from disk (mtime cache), a
+  slider change only reached the shader after an explicit save — ESC threw the
+  edit away.
+- **Diagnostic**: `PostEffects` logs once on the first frame
+  `[bodycam] VignetteBlur: uniform=OK|NULL! value=...`, so a missing uniform is
+  immediately visible in `logs/latest.log`.
+- **Debug notes from the previous build** (log of session 13:45): shader
+  registered, `postFX render ATIVO ... shaderOK=true`, no GL/compile errors,
+  Iris `enableShaders=false` (no shaderpack overriding the pass), no resource
+  pack shipping `assets/bodycam/**`, installed jar byte-identical to the build.
+- **Build of this session**: `gradlew.bat clean build --no-daemon` —
+  **BUILD SUCCESSFUL** (14 s). Jar `NEXUS-bodycam-1.4.3+1.20.1.jar` —
+  **SHA256** `4EA7E9D5D1FF5D084010B5F38F24B0992604AA97E31340F7232A950D1A8BF2C5`
+  (2 378 560 bytes); installed in `mods` (game closed, 41 jars).
+- **Pending**: playtest of the blurred vignette + auto-save.
+
+---

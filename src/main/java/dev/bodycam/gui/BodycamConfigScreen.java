@@ -365,6 +365,9 @@ public class BodycamConfigScreen extends Screen {
             case "underwaterFogDensity" -> config.underwaterFogDensity = v;
             case "foamIntensity" -> config.foamIntensity = v;
         }
+        // AUTO SAVE: the game reads the config from disk (mtime cache), so a
+        // change only becomes visible in-game once it is written out.
+        config.save();
     }
 
     private boolean getToggle(String key) {
@@ -430,6 +433,7 @@ public class BodycamConfigScreen extends Screen {
             case "syncWithShader" -> config.syncWithShader = v;
             case "disableVanillaBobbing" -> config.disableVanillaBobbing = v;
         }
+        config.save();  // AUTO SAVE (see setVal)
     }
 
     private Text toggleLabel(String key, boolean val) {
@@ -444,6 +448,7 @@ public class BodycamConfigScreen extends Screen {
 
     @Override
     public void close() {
+        config.save();  // AUTO SAVE: leaving with ESC keeps whatever was edited
         this.client.setScreen(this.parent);
     }
 
