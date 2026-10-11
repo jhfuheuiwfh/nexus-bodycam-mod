@@ -23,8 +23,8 @@ Chest-mounted camera, breathing you can hear, lens effects and full weapon reali
 
 | | |
 |---|---|
-| ![Smooth steps](media/smooth-steps.gif) | ![Flying / landing](media/flying.gif) |
-| **Smooth steps** — audio-synced bob + step damping | **Air & landing** — rotational impact jolt |
+| ![Smooth steps](media/smooth-steps.gif) | ![Flying camera shake](media/flying.gif) |
+| **Smooth steps** — audio-synced bob + step damping | **Flying shake** — the camera shakes hard while you fly |
 | ![Roll & motion blur](media/roll-motion-blur.gif) | ![Gun realism](media/gun.gif) |
 | **Real roll** — true banking, angular motion blur | **TACZ gun spring** — recoil, sway, lowering |
 
