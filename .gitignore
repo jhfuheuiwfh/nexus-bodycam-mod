@@ -1,0 +1,66 @@
+# =====================================================================
+#  NEXUS Bodycam — .gitignore
+#  Build outputs, caches, third-party jars and local runtime junk.
+# =====================================================================
+
+# ---------- Build output ---------------------------------------------
+build/
+out/
+dist/
+*.class
+
+# ---------- Gradle ----------------------------------------------------
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# ---------- Fabric Loom / Minecraft dev runtime -----------------------
+run/
+remappedSrc/
+nativetemp/
+loom-cache/
+
+# ---------- JARs (never commit binaries built locally) ----------------
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+# TACZ jar lives in libs/ — it is a third-party mod, NOT redistributable
+libs/*.jar
+
+# ---------- Logs & crash reports --------------------------------------
+logs/
+*.log
+*.log.*
+crash-reports/
+
+# ---------- Runtime / user data (created by the dev client) -----------
+saves/
+usercache.json
+session.lock
+options.txt
+servers.dat
+
+# ---------- IDEs -------------------------------------------------------
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+.vscode/
+.settings/
+.classpath
+.project
+bin/
+eclipse/
+*.swp
+*~
+
+# ---------- OS junk -----------------------------------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# ---------- Secrets / local env ----------------------------------------
+.env
+.env.*
+*.keystore
+*.pem

@@ -1,0 +1,6 @@
+{
+  "breath": {
+    "subtitle": "subtitles.bodycam.breath",
+    "sounds": ["bodycam:breath-in-out"]
+  }
+}

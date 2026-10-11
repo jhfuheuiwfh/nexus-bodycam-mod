@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "package": "dev.bodycam.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "plugin": "dev.bodycam.mixin.BodycamMixinPlugin",
+  "mixins": [
+    "CameraMixin",
+    "ClientPlayerEntityMixin",
+    "EntityMixin",
+    "GameRendererMixin"
+  ],
+  "client": [
+    "CameraMixin",
+    "ClientPlayerEntityMixin",
+    "EntityMixin",
+    "GameRendererMixin",
+    "TaczGunTransformMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

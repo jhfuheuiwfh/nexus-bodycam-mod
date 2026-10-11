@@ -1,0 +1,8 @@
+accessWidener	v2	named
+accessible	class	net/minecraft/client/render/Camera
+accessible	method	net/minecraft/client/render/Camera	setRotation	(FF)V
+accessible	method	net/minecraft/client/render/Camera	setPos	(Lnet/minecraft/util/math/Vec3d;)V
+accessible	method	net/minecraft/client/render/Camera	getYaw	()F
+accessible	method	net/minecraft/client/render/Camera	getPitch	()F
+accessible	method	net/minecraft/client/render/Camera	getPos	()Lnet/minecraft/util/math/Vec3d;
+accessible	field	net/minecraft/entity/Entity	fallDistance	F

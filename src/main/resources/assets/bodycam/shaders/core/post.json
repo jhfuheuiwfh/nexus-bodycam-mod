@@ -1,0 +1,47 @@
+{
+    "blend": {
+        "func": "add",
+        "srcrgb": "one",
+        "dstrgb": "zero"
+    },
+    "vertex": "bodycam:post",
+    "fragment": "bodycam:post",
+    "attributes": [
+        "Position"
+    ],
+    "samplers": [
+        { "name": "ScreenTex" },
+        { "name": "DirtyLensTex" }
+    ],
+    "uniforms": [
+        { "name": "ModelViewMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "ProjMat", "type": "matrix4x4", "count": 16, "values": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "IViewRotMat", "type": "matrix3x3", "count": 9, "values": [ 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0 ] },
+        { "name": "ColorModulator", "type": "float", "count": 4, "values": [ 1.0, 1.0, 1.0, 1.0 ] },
+        { "name": "FovWideMult", "type": "float", "count": 1, "values": [ 1.0 ] },
+        { "name": "FisheyeK1", "type": "float", "count": 1, "values": [ 0.18 ] },
+        { "name": "FisheyeK2", "type": "float", "count": 1, "values": [ -0.08 ] },
+        { "name": "VignetteCosPow", "type": "float", "count": 1, "values": [ 2.2 ] },
+        { "name": "VignetteMech", "type": "float", "count": 1, "values": [ 0.35 ] },
+        { "name": "VignetteFloor", "type": "float", "count": 1, "values": [ 0.12 ] },
+        { "name": "VignetteCenterGain", "type": "float", "count": 1, "values": [ 1.15 ] },
+        { "name": "CAStrength", "type": "float", "count": 1, "values": [ 0.003 ] },
+        { "name": "LensDirtIntensity", "type": "float", "count": 1, "values": [ 1.5 ] },
+        { "name": "LensDirtVeiling", "type": "float", "count": 1, "values": [ 0.06 ] },
+        { "name": "GrainStrength", "type": "float", "count": 1, "values": [ 0.05 ] },
+        { "name": "GrainCellSize", "type": "float", "count": 1, "values": [ 2.0 ] },
+        { "name": "Time", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "ScreenSize", "type": "float", "count": 2, "values": [ 1.0, 1.0 ] },
+        { "name": "PostFXEnabled", "type": "float", "count": 1, "values": [ 1.0 ] },
+        { "name": "WaterRefraction", "type": "float", "count": 1, "values": [ 0.05 ] },
+        { "name": "Underwater", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Exposure", "type": "float", "count": 1, "values": [ 1.0 ] },
+        { "name": "LensDrops", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "LensCond", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "LensSmudge", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Ghost", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "Dust", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "EdgeProfile", "type": "float", "count": 1, "values": [ 0.0 ] },
+        { "name": "BlurVec", "type": "float", "count": 2, "values": [ 0.0, 0.0 ] }
+    ]
+}
