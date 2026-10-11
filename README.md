@@ -194,7 +194,10 @@ The same disclosure is used on the Modrinth page (content rating → *Contains A
 
 Released under the **[GNU General Public License v3.0](LICENSE)**.
 
-Minecraft is a trademark of Mojang Studios. This project is not affiliated with Mojang.
-TACZ, Mod Menu, Iris and Sodium belong to their respective authors.
+## Support
+
+Feedback and bug reports welcome:
+
+- **Email:** [stableuser1223@gmail.com](mailto:stableuser1223@gmail.com?subject=NEXUSbodycammod%20feedback)
 
 **Links:** [Repository](../../) · [Issue tracker](../../issues) · [Wiki](../../wiki) · [Changelog](docs/CHANGELOG.md) · [Dev notes](docs/DEVNOTES.md)
