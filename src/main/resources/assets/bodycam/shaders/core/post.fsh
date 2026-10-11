@@ -115,12 +115,54 @@ void main() {
 
     if (PostFXEnabled > 0.5) {
         vec2 distortedUV = fisheyeDistort(uv, FisheyeK1, FisheyeK2);
-        if (distortedUV.x < 0.0 || distortedUV.x > 1.0 || distortedUV.y < 0.0 || distortedUV.y > 1.0) {
-            fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+        // v1.4.3 (fix 3) — the frame border MELTS into black instead of ending
+        // on a razor-sharp cut: outside the valid sample area we keep sampling
+        // the clamped edge through a defocus disc that grows with the distance
+        // out, then fade to black. Width is driven by VignetteBlur (0 = the old
+        // hard cut).
+        vec2 edgeUV = clamp(distortedUV, 0.0, 1.0);
+        vec2 oob = abs(distortedUV - edgeUV);
+        float outD = max(oob.x, oob.y);
+        if (outD > 0.0) {
+            float feather = 0.05 * clamp(VignetteBlur, 0.0, 1.0);
+            if (feather <= 1e-5) {
+                fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                return;
+            }
+            vec2 sd = min(uv, 1.0 - uv);
+            float fade = (1.0 - smoothstep(0.0, feather, outD))
+                       * smoothstep(0.0, 0.012, min(sd.x, sd.y));
+            if (fade <= 0.003) {
+                fragColor = vec4(0.0, 0.0, 0.0, 1.0);
+                return;
+            }
+            float rad = 0.025 + 0.055 * (1.0 - fade);
+            vec2 px2uv = vec2(ScreenSize.y / max(ScreenSize.x, 1.0), 1.0);
+            vec3 sum = vec3(0.0);
+            for (int i = 0; i < 12; i++) {
+                float fi = float(i);
+                float ang = fi * 2.39996323;
+                float ring = sqrt((fi + 0.5) / 12.0);
+                vec2 o = vec2(cos(ang) * px2uv.x, sin(ang)) * ring * rad;
+                sum += texture(ScreenTex, clamp(edgeUV + o, 0.0, 1.0)).rgb;
+            }
+            vec3 edge = sum / 12.0 * Exposure;
+            edge *= vignette(edgeUV, VignetteCosPow, VignetteMech, VignetteFloor, VignetteCenterGain);
+            fragColor = vec4(edge * fade, 1.0);
             return;
         }
 
         vec2 duv = distortedUV - 0.5;
+
+        // ---- GPU probe (temporary): PostEffects reads this pixel back ------
+        if (abs(uv.x - 0.105) < 0.0012 && abs(uv.y - 0.905) < 0.0018) {
+            float alive = step(0.5, VignetteBlur);
+            float rrp = length(duv) * 1.4142;
+            float mp = smoothstep(0.35, 1.05, rrp) * clamp(VignetteBlur, 0.0, 1.0);
+            fragColor = vec4(alive, step(0.15, mp), 0.0, 1.0);
+            return;
+        }
 
         // roadmap 10 — lens profile: chromatic fringing grows toward the edge
         vec2 caOffset = duv * CAStrength * (1.0 + dot(duv, duv) * 2.0 * EdgeProfile);
@@ -201,9 +243,9 @@ void main() {
 
         if (VignetteBlur > 0.001) {
             float rr = length(duv) * 1.4142;
-            float edgeMask = smoothstep(0.40, 1.05, rr) * clamp(VignetteBlur, 0.0, 1.0);
+            float edgeMask = smoothstep(0.35, 1.05, rr) * clamp(VignetteBlur, 0.0, 1.0);
             if (edgeMask > 0.003) {
-                float radius = 0.045 * edgeMask;          // up to ~4.5% of the screen at full
+                float radius = 0.05 * edgeMask;           // up to ~5% of the screen at full
                 vec2 px2uv = vec2(ScreenSize.y / max(ScreenSize.x, 1.0), 1.0); // keep the disc round
                 vec3 sum = vec3(0.0);
                 for (int i = 0; i < 12; i++) {
