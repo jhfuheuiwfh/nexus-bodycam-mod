@@ -736,3 +736,14 @@ all fucked up… there's no scroll (bottom parts cut off!)".
   `1.4.3`.
 
 ---
+
+### Session 2026-10-11 (cont.) — media deduplication
+
+- **`media/` removed** — the four GIFs were byte-identical duplicates of the
+  files in `gameplay/` (user's folder: 4 GIFs + 4 MP4 clips).
+- README preview now points at `gameplay/*.gif`.
+- Tracked size 26.82 MB -> ~20.6 MB. The old blobs still exist in git history
+  (this repo has only local/one remote, `git filter-repo` available if a full
+  cleanup is ever wanted).
+
+---
