@@ -781,3 +781,41 @@ all fucked up… there's no scroll (bottom parts cut off!)".
 - **Pending**: playtest of the blurred vignette + auto-save.
 
 ---
+
+### Session 2026-10-11 (cont. 4) - the black frame border now MELTS (blurred) + GPU probe
+
+- **Evidence first (no guessing)**: analysed the user's screenshot
+  2026-10-11_13.46.22.png with a script (LockBits, ring buckets): the black
+  frame measures 31-79 px (matches the fisheye crop) and the radial gradient is
+  **flat** from ring 2 to ring 6 (~41) - i.e. with `vignetteBlur = 1.0` the
+  outer rings were exactly as sharp as the centre: the defocus had no effect.
+- **What the user actually meant**: ignette() returns ~1.15 for r >= 0.3
+  (`centerGain` applied with an increasing weight), so the base vignette never
+  darkens the edge - the "black thing" they see is the **fisheye early return**,
+  a razor-straight cut to black. They wanted THAT edge blurred.
+- **Fix 3 (post.fsh)**: instead of `return black` the border now samples the
+  clamped edge through a defocus disc that grows with the distance out
+  (`0.025 + 0.055 * (1 - fade)`) and fades to black
+  (`fade = (1 - smoothstep(0, feather, outD)) * smoothstep(0, 0.012, screenEdge)`)
+  with `feather = 0.05 * vignetteBlur`. Slider at 0 = the old hard cut.
+- **Mask strengthened**: ring mask now `smoothstep(0.35, 1.05, rr)` and radius
+  `0.05 * mask` (~53 px at the corner with the slider at 1.0).
+- **GPU probe (temporary, to end the guessing)**: the shader paints a ~4 px
+  marker at `uv ~ (0.105, 0.905)` encoding `R = VignetteBlur >= 0.5` and
+  `G = edge mask > 0.15`; PostEffects reads that pixel back with
+  `glReadPixels` on the first frame and logs
+  `[bodycam] GPU probe: VignetteBlurAlive=... edgeMaskAlive=... rgba=...`.
+  That is the only way to separate "the uniform never reached the GPU" from
+  "it arrived but is invisible".
+- **Ruled out**: only our jar ships `assets/bodycam/**` (scanned all 41 mods);
+  duv is never reassigned; the DOF blur pass only runs in the config GUI;
+  the pass samples scratch and writes main (no read/write hazard);
+  injection is at the **TAIL** of `GameRenderer.renderWorld` (after the world).
+- **Build of this session**: `gradlew.bat clean build --no-daemon` -
+  **BUILD SUCCESSFUL** (17 s). Jar NEXUS-bodycam-1.4.3+1.20.1.jar -
+  **SHA256** `FEB0538D77EE1DC0DA11EF1ACC3BA586588DC3D28504171426DF3D5B01090542`
+  (2 379 645 bytes); installed in `mods` (game closed, 41 jars, single copy).
+- **Pending**: playtest (feathered border + stronger ring blur + auto-save) and
+  the GPU probe line from `logs/latest.log`.
+
+---

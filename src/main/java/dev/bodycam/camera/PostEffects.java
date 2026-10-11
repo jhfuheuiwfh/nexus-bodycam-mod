@@ -31,6 +31,7 @@ public class PostEffects {
     private static boolean dirtFailed = false;
     private static boolean logged = false;
     private static boolean loggedBlur = false;
+    private static boolean probeLogged = false;
 
     private static long fpsLastNanos = 0;
     private static double fpsEma = 60.0;
@@ -291,6 +292,30 @@ public class PostEffects {
         }
 
         drawQuad();
+
+        // GPU probe: the shader paints a tiny marker pixel encoding whether the
+        // VignetteBlur uniform and the edge-mask branch are alive ON THE GPU.
+        // Read back once on the first frame and log it — this is the only way
+        // to tell "uniform never arrived" from "arrived but invisible".
+        if (!probeLogged) {
+            probeLogged = true;
+            try {
+                Framebuffer main = mc.getFramebuffer();
+                int px = (int) (0.105 * width);
+                int py = (int) (0.905 * height);
+                java.nio.ByteBuffer bb = org.lwjgl.BufferUtils.createByteBuffer(4);
+                GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, main.fbo);
+                GL11.glReadPixels(px, py, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, bb);
+                main.beginWrite(false);
+                int pr = bb.get(0) & 255, pg = bb.get(1) & 255, pb = bb.get(2) & 255, pa = bb.get(3) & 255;
+                BodycamClient.LOGGER.info(
+                    "[bodycam] GPU probe: VignetteBlurAlive={} edgeMaskAlive={} rgba={},{},{},{}",
+                    pr >= 128, pg >= 128, pr, pg, pb, pa);
+            } catch (Throwable t) {
+                BodycamClient.LOGGER.warn("[bodycam] GPU probe falhou: {}", t.toString());
+            }
+        }
+
         postShader.unbind();
         endPass();
     }
