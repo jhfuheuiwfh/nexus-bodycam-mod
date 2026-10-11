@@ -190,15 +190,20 @@ void main() {
             color.rgb = mix(color.rgb, smear * 1.04 + 0.015, band * 0.5);
         }
 
-        // v1.4.3 — bodycam edge blur: a real wide lens goes out of focus toward
-        // the frame border, so the periphery (the vignette ring) is genuinely
-        // blurred. 12-tap golden-angle disc, radius grows with the radius and
-        // with VignetteBlur (0 = off, 1 = full defocus at the corner).
+        // v1.4.3 (fix 2) — THE VIGNETTE ITSELF IS BLURRED. The base vignette is
+        // applied FIRST and the defocus pass runs after it, so what gets smeared
+        // is the finished frame. Every one of the 12 golden-angle taps re-applies
+        // the vignette at its own position (plus the exposure gain), which means
+        // the dark ring's contour bleeds softly into the image — a real bodycam
+        // periphery — instead of ending on a clean, razor-sharp curve.
+        float vig = vignette(distortedUV, VignetteCosPow, VignetteMech, VignetteFloor, VignetteCenterGain);
+        color.rgb *= vig;
+
         if (VignetteBlur > 0.001) {
             float rr = length(duv) * 1.4142;
-            float edgeMask = smoothstep(0.45, 1.05, rr) * clamp(VignetteBlur, 0.0, 1.0);
+            float edgeMask = smoothstep(0.40, 1.05, rr) * clamp(VignetteBlur, 0.0, 1.0);
             if (edgeMask > 0.003) {
-                float radius = 0.035 * edgeMask;          // ~3.5% of the screen at the corner
+                float radius = 0.045 * edgeMask;          // up to ~4.5% of the screen at full
                 vec2 px2uv = vec2(ScreenSize.y / max(ScreenSize.x, 1.0), 1.0); // keep the disc round
                 vec3 sum = vec3(0.0);
                 for (int i = 0; i < 12; i++) {
@@ -206,14 +211,14 @@ void main() {
                     float ang = fi * 2.39996323;           // golden angle
                     float ring = sqrt((fi + 0.5) / 12.0);  // uniform disc sampling
                     vec2 o = vec2(cos(ang) * px2uv.x, sin(ang)) * ring * radius;
-                    sum += texture(ScreenTex, clamp(distortedUV + o, 0.0, 1.0)).rgb;
+                    vec2 suv = clamp(distortedUV + o, 0.0, 1.0);
+                    vec3 s = texture(ScreenTex, suv).rgb;
+                    s *= vignette(suv, VignetteCosPow, VignetteMech, VignetteFloor, VignetteCenterGain);
+                    sum += s * Exposure;
                 }
                 color.rgb = mix(color.rgb, sum / 12.0, edgeMask);
             }
         }
-
-        float vig = vignette(distortedUV, VignetteCosPow, VignetteMech, VignetteFloor, VignetteCenterGain);
-        color.rgb *= vig;
 
         float lum = dot(color.rgb, vec3(0.299, 0.587, 0.114));
         float bloomProxy = max(lum, 0.0);

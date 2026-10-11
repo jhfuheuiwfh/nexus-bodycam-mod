@@ -30,6 +30,7 @@ public class PostEffects {
     private static AbstractTexture dirtTex;
     private static boolean dirtFailed = false;
     private static boolean logged = false;
+    private static boolean loggedBlur = false;
 
     private static long fpsLastNanos = 0;
     private static double fpsEma = 60.0;
@@ -211,6 +212,11 @@ public class PostEffects {
         if (u != null) u.set((float) cfg.vignetteCenterGain);
         u = postShader.getUniform("VignetteBlur");
         if (u != null) u.set((float) cfg.vignetteBlur);
+        if (!loggedBlur) {
+            loggedBlur = true;
+            BodycamClient.LOGGER.info("[bodycam] VignetteBlur: uniform={} value={}",
+                u != null ? "OK" : "NULL!", cfg.vignetteBlur);
+        }
 
         u = postShader.getUniform("CAStrength");
         if (u != null) u.set((float) (cfg.chromaticAberration * qs));
