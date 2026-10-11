@@ -136,6 +136,32 @@ Settings are saved to `config/bodycam.json` with validation — invalid or missi
 
 ---
 
+## Third-Party Credits & Acknowledgements
+
+NEXUS Bodycam is built for the Minecraft modding ecosystem and acknowledges the developers and contributors behind the third-party projects listed below. These projects are independent of NEXUS Bodycam and retain their own authorship, licenses, and distribution terms.
+Dependencies & Integrations
+
+- **[Fabric Loader](https://github.com/FabricMC/fabric-loader)** — FabricMC contributors. Mod-loading platform.
+
+- **[Fabric API](https://github.com/FabricMC/fabric-api)** — FabricMC contributors. Required modding library.
+
+- **[Mod Menu](https://github.com/TerraformersMC/ModMenu)** — Mod Menu contributors. Optional configuration-screen integration.
+
+- **[TaCZ](https://github.com/MCModderAnchor/TACZ)** — Timeless and Classics Zero — TaCZ developers and contributors. Optional weapon-animation and visual integration.
+Rendering & Compatibility
+
+- **[Iris Shaders](https://github.com/IrisShaders/Iris)** — Iris developers and contributors. Shader compatibility and integration support. 
+
+- **[Sodium](https://github.com/CaffeineMC/sodium)** — JellySquid and Sodium contributors. Rendering optimization and compatibility within the supported mod ecosystem.
+
+- **[Distant Horizons](https://gitlab.com/distant-horizons-team/distant-horizons)** — Distant Horizons developers and contributors. Compatibility support.
+
+Attribution & Licensing. All third-party projects remain the property of their respective authors and are governed by their own licenses and distribution terms. Please consult each project's official page or source repository for full licensing information.
+NEXUS Bodycam does not claim authorship of these projects. Compatibility, integration, or acknowledgement does not imply endorsement by their developers. Unless explicitly stated otherwise, these mods are separate downloads and are not included in the NEXUS Bodycam distribution.
+Any third-party code, assets, textures, sounds, or other materials distributed with NEXUS Bodycam must retain the applicable permissions, notices, and license requirements. Shaderpacks used alongside NEXUS Bodycam are independent projects and should be credited to their respective creators.
+**[Minecraft](https://www.minecraft.net/en-us)** is a trademark of **Mojang Studios** and **Microsoft**. NEXUS Bodycam is an independent project and is not affiliated with, endorsed by, or sponsored by Mojang Studios or Microsoft.
+
+---
 ## Project layout
 
 ```
