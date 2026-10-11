@@ -72,6 +72,7 @@
 - [x] AI disclosure (`AI-TRANSPARENCY.md`, README, Modrinth listing)
 - [x] Wiki (install / build / configuration / FAQ)
 - [x] Demo GIFs in `media/`
+- [x] GitHub Release `v1.4.2+1.20.1` with the jar attached
 
 </details>
 

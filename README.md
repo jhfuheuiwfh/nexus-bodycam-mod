@@ -71,6 +71,8 @@ Designed to work *with* bodycam shaderpacks: the mod owns the **camera motion**,
 
 ## Installation
 
+📥 **Download:** [**latest release**](../../releases/latest) → `NEXUS-bodycam-1.4.2+1.20.1.jar`
+
 1. Install **[Fabric Loader](https://fabricmc.net/use/installer/)** for Minecraft **1.20.1**.
 2. Drop `NEXUS-bodycam-1.4.2+1.20.1.jar` into your `mods` folder.
 3. *(Optional)* **[Mod Menu](https://modrinth.com/mod/modmenu)** for the in-game config screen, **[TACZ](https://modrinth.com/mod/tacz)** for weapon realism, **[Iris](https://modrinth.com/mod/iris)** for shaders.
