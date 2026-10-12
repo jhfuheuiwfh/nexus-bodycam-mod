@@ -1,5 +1,11 @@
 <div align="center">
 
+---
+
+<img width="992" height="397" alt="Nexus-Bodycam Cyberpunk Recording HUD (2)" src="https://github.com/user-attachments/assets/94e9e55f-62d6-4bae-8eb5-b9d1071057c3" />
+
+---
+
 # 📹 NEXUS Bodycam
 
 **Turn Minecraft into a first-person bodycam experience.**
