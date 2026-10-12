@@ -182,7 +182,7 @@ Any third-party code, assets, textures, sounds, or other materials distributed w
 
 ---
 
-## 🤖 AI transparency
+## Disclosures
 
 This project is **substantially AI-generated** and says so openly: a large share of the
 **code, shaders, assets and documentation** was produced by AI coding agents
@@ -192,6 +192,8 @@ hand** by the author, so the codebase is a mix of AI and human work.
 
 Full details — what AI did, what the human did — are in **[AI-TRANSPARENCY.md](AI-TRANSPARENCY.md)**.
 The same disclosure is used on the Modrinth page (content rating → *Contains AI-generated content*).
+
+## **PHOTOSENSITIVITY WARNING:** This project may contain flashing lights.
 
 ---
 
