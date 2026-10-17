@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Wiki
+    url: https://github.com/jhfuheuiwfh/nexus-bodycam-mod/wiki
+    about: Install, build, configuration and FAQ — check here first.
+  - name: Documentation site
+    url: https://jhfuheuiwfh.github.io/nexus-bodycam-mod/
+    about: Deep-dive on the architecture, post-FX pipeline and how each system works.
+  - name: Compatibility & mod conflicts
+    url: https://github.com/jhfuheuiwfh/nexus-bodycam-mod/issues?q=is%3Aissue+label%3Acompat
+    about: Already having a crash? It is often another mod — search here before filing.

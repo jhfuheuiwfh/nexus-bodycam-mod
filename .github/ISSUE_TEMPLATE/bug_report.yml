@@ -1,0 +1,103 @@
+name: Bug report
+description: Report something that broke in NEXUS Bodycam
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Fill in as much as you can — it saves a round trip.
+        **Check the [changelog](../../pages) and the wiki first**, the fix may already exist.
+
+  - type: input
+    id: version
+    attributes:
+      label: Mod version
+      description: Exactly as shown in the mods list, e.g. `1.4.3+1.20.1`.
+      placeholder: 1.4.3+1.20.1
+    validations:
+      required: true
+
+  - type: input
+    id: loader
+    attributes:
+      label: Fabric Loader version
+      placeholder: 0.15.11
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: The actual behaviour. If there is an error, paste it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should have happened
+    validations:
+      required: true
+
+  - type: dropdown
+    id: repro
+    attributes:
+      label: How often
+      options:
+        - Always
+        - Often
+        - Sometimes
+        - Only once
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Numbered steps. The shorter the better.
+      placeholder: |
+        1. Install the mod with X, Y, Z
+        2. Open a world
+        3. Enable chest cam
+        4. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: mods
+    attributes:
+      label: Other mods installed
+      description: Paste your `mods/` list. **Compatibility between mods is the most common cause** — see the warning in the README.
+      render: text
+
+  - type: dropdown
+    id: shader
+    attributes:
+      label: Shaders (Iris)
+      options:
+        - None
+        - Bodycam-style shaderpack
+        - Other shaderpack
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tacz
+    attributes:
+      label: TaCZ installed
+      options:
+        - "No"
+        - "Yes"
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Latest log
+      description: `latest.log` from `.minecraft/logs/`. Drag the file in — GitHub uploads it and links it here.
+      render: text

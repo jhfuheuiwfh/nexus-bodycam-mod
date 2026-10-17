@@ -1,0 +1,71 @@
+name: Feature request
+description: Suggest an improvement or a new effect
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideas are welcome. Two things worth knowing before writing:
+        - The mod is **100% client-side** and must never touch movement speed,
+          hitboxes, raycasts or server logic. Requests that break that are dead on arrival.
+        - **Performance budget matters** — everything runs every frame. A heavy
+          effect has to earn its cost.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: Not the solution — the problem. "The camera feels flat when X" beats "add option Y".
+    validations:
+      required: true
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: What you imagine it doing, and how it should look/feel.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Camera motion
+        - Breathing
+        - Post-FX / optics
+        - Water
+        - TaCZ integration
+        - Shader compatibility
+        - Config GUI / presets
+        - Performance
+        - Docs site
+        - Something else
+    validations:
+      required: true
+
+  - type: dropdown
+    id: presets
+    attributes:
+      label: Should it be a new preset or affect all of them
+      options:
+        - Affects all presets
+        - New preset
+        - Per-preset toggle
+        - Not sure
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: Existing mods, shaderpack settings, or config values that already get close.
+
+  - type: checkboxes
+    id: extra
+    attributes:
+      label: Extra
+      options:
+        - label: I'm willing to playtest an experimental build
+        - label: I understand this is a **visual-only** mod and I'm not asking for gameplay changes
