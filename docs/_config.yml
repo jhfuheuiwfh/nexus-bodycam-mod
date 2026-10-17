@@ -1,16 +1,16 @@
 title: NEXUS Bodycam
-description: "Documentação profunda do NEXUS Bodycam — mod de câmera estilo bodycam para Minecraft 1.20.1 (Fabric). Arquitetura temporal, pipeline de post-FX, respiração sincronizada, integração TACZ e compatibilidade com shaders."
+description: "In-depth documentation for NEXUS Bodycam — a bodycam-style camera mod for Minecraft 1.20.1 (Fabric). Temporal architecture, post-FX pipeline, synced breathing, TACZ integration and shader compatibility."
 url: "https://jhfuheuiwfh.github.io"
 baseurl: "/nexus-bodycam-mod"
-lang: pt-BR
+lang: en
 
 markdown: kramdown
 kramdown:
   input: GFM
   syntax_highlighter: rouge
 
-# Layout customizado em _layouts/default.html — não usa tema gem.
-# CHANGELOG.md e DEVNOTES.md ficam sem front matter de propósito:
-# são servidos como .md puro e linkados pelo README.
+# Custom layout in _layouts/default.html — no gem theme is used.
+# CHANGELOG.md and DEVNOTES.md deliberately have no front matter:
+# they are served as raw .md and linked from the README.
 exclude:
   - README.md

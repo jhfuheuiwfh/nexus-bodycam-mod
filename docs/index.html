@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Documentação
-description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, pipeline de post-FX, respiração sincronizada, integração TACZ e compatibilidade com shaders para Minecraft 1.20.1[...]
+title: Documentation
+description: In-depth documentation for NEXUS Bodycam — temporal architecture, post-FX pipeline, synced breathing, TACZ integration and shader compatibility for Minecraft 1.20.1 (Fabric).
 ---
 
 <!-- ═══════════════ HERO ═══════════════ -->
@@ -10,22 +10,22 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
     <div>
       <span class="hero__selo"><span class="ponto-rec"></span> REC · v1.4.3+1.20.1</span>
 
-      <h1>Uma câmera de&nbsp;bodycam<br>dentro do Minecraft.</h1>
+      <h1>A bodycam inside&nbsp;Minecraft.</h1>
 
       <p class="lead">
-        NEXUS Bodycam é uma reformulação <b>100% client-side</b> da câmera de primeira
-        pessoa. Ele muda como a câmera <i>parece e se sente</i> — nunca velocidade de
-        movimento, hitboxes, raycasts ou lógica de servidor.
+        NEXUS Bodycam is a <b>100% client-side</b> rework of the first-person
+        camera. It changes how the camera <i>looks and feels</i> — never movement
+        speed, hitboxes, raycasts or server logic.
       </p>
 
       <div class="hero__botoes">
         <a class="botao botao--primario" href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/releases/download/v1.4.3%2B1.20.1/NEXUS-bodycam-1.4.3+1.20.1.jar" rel="noopener">
           <svg class="ico" aria-hidden="true"><use href="#ico-baixar"></use></svg>
-          Baixar v1.4.3
+          Download v1.4.3
         </a>
         <a class="botao botao--fantasma" href="#arquitetura">
           <svg class="ico" aria-hidden="true"><use href="#ico-livro"></use></svg>
-          Como funciona
+          How it works
         </a>
       </div>
 
@@ -33,7 +33,7 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
         <span class="pill">Minecraft <b>1.20.1</b></span>
         <span class="pill">Fabric <b>≥ 0.15.11</b></span>
         <span class="pill">Java <b>17+</b></span>
-        <span class="pill">Licença <b>GPL-3.0</b></span>
+        <span class="pill">License <b>GPL-3.0</b></span>
       </div>
     </div>
 
@@ -46,50 +46,50 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
       </div>
       <div class="cam__cantos">
         <img src="https://raw.githubusercontent.com/jhfuheuiwfh/nexus-bodycam-mod/main/gameplay/smooth-steps.gif"
-             alt="Prévia: passos suavizados com bob sincronizado ao áudio" loading="eager" decoding="async">
+             alt="Preview: smoothed footsteps with bob synced to the audio" loading="eager" decoding="async">
       </div>
     </figure>
   </div>
 </section>
 
-<!-- ═══════════════ MÉTRICAS ═══════════════ -->
+<!-- ═══════════════ METRICS ═══════════════ -->
 <section class="secao" style="padding-top:0">
   <div class="env">
     <div class="metricas">
       <div class="metrica"><b>8</b><span>presets</span></div>
-      <div class="metrica"><b>17</b><span>passagens DoF</span></div>
-      <div class="metrica"><b>3.06s</b><span>ciclo respiratório</span></div>
-      <div class="metrica"><b>75–83</b><span>FPS com tudo ativo</span></div>
+      <div class="metrica"><b>17</b><span>DoF passes</span></div>
+      <div class="metrica"><b>3.06s</b><span>breathing cycle</span></div>
+      <div class="metrica"><b>75–83</b><span>FPS with everything on</span></div>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════ SISTEMAS ═══════════════ -->
+<!-- ═══════════════ SYSTEMS ═══════════════ -->
 <section class="secao secao--alt" id="sistemas">
   <div class="env">
     <div class="cabec">
       <span class="etiqueta">
         <svg class="ico" aria-hidden="true"><use href="#ico-lente"></use></svg>
-        Sistemas
+        Systems
       </span>
-      <h2>Cada ícone abre o detalhe interno</h2>
+      <h2>Every icon opens the internals</h2>
       <p>
-        Estes são os subsistemas que compõem o mod. Clique em qualquer card para
-        abrir o diagrama correspondente — inclusive a árvore genealógica do código.
+        These are the subsystems that make up the mod. Click any card to open the
+        matching diagram — including the family tree of the code.
       </p>
     </div>
 
     <div class="grade grade--2">
 
-      <!-- ── 1. Livro → árvore genealógica do código ─────────────── -->
+      <!-- ── 1. Book → code family tree ──────────────────────────── -->
       <article class="card acordeao">
         <button class="acordeao__gatilho" type="button" aria-expanded="false" aria-controls="painel-arvore">
           <span class="card__ico">
             <svg class="ico" aria-hidden="true"><use href="#ico-livro"></use></svg>
           </span>
           <span class="acordeao__txt">
-            <h3>Árvore genealógica do código</h3>
-            <p>Estrutura de pacotes e herança entre as classes do mod.</p>
+            <h3>Code family tree</h3>
+            <p>Package layout and how the classes relate.</p>
           </span>
           <svg class="ico acordeao__chev" aria-hidden="true"><use href="#ico-chevron"></use></svg>
         </button>
@@ -98,57 +98,57 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
             <figure class="diagrama" style="margin:0">
               <div class="arvore">
                 <ul>
-                  <li><span class="pkg">dev.bodycam</span> <span class="obs">raiz do mod</span>
+                  <li><span class="pkg">dev.bodycam</span> <span class="obs">mod root</span>
                     <ul>
-                      <li><span class="arq">BodycamClient</span> <span class="obs">— entrypoint client</span></li>
-                      <li><span class="arq">BodycamModMenu</span> <span class="obs">— entrypoint Mod Menu</span></li>
+                      <li><span class="arq">BodycamClient</span> <span class="obs">— client entrypoint</span></li>
+                      <li><span class="arq">BodycamModMenu</span> <span class="obs">— Mod Menu entrypoint</span></li>
 
-                      <li><span class="pkg">camera</span> <span class="obs">— o coração da câmera</span>
+                      <li><span class="pkg">camera</span> <span class="obs">— the heart of the camera</span>
                         <ul>
-                          <li><b>BodycamEffects</b> <span class="obs">— orquestra bob, tremor, roll, respiração</span>
+                          <li><b>BodycamEffects</b> <span class="obs">— orchestrates bob, shake, roll, breathing</span>
                             <ul>
-                              <li><span class="arq">TemporalSmoother</span> <span class="obs">— suavização por delta real</span></li>
-                              <li><span class="arq">Spring</span> <span class="obs">— mola amortecida (k/c)</span></li>
-                              <li><span class="arq">CameraState</span> <span class="obs">— estado persistente por frame</span></li>
-                              <li><span class="arq">ChestCam</span> <span class="obs">— modo peito + FOV largo</span></li>
+                              <li><span class="arq">TemporalSmoother</span> <span class="obs">— smoothing on real delta</span></li>
+                              <li><span class="arq">Spring</span> <span class="obs">— damped spring (k/c)</span></li>
+                              <li><span class="arq">CameraState</span> <span class="obs">— per-frame persistent state</span></li>
+                              <li><span class="arq">ChestCam</span> <span class="obs">— chest mode + wide FOV</span></li>
                             </ul>
                           </li>
-                          <li><span class="arq">BreathSound</span> <span class="obs">— respiração + OGG sincronizado</span></li>
-                          <li><span class="arq">PostEffects</span> <span class="obs">— exposição, flash, motion blur</span></li>
-                          <li><span class="arq">WaterEffects</span> <span class="obs">— ondas, cáusticas, refração</span></li>
-                          <li><span class="pkg">tacz</span> <span class="obs">— realismo visual de armas</span>
+                          <li><span class="arq">BreathSound</span> <span class="obs">— breathing + synced OGG</span></li>
+                          <li><span class="arq">PostEffects</span> <span class="obs">— exposure, flash, motion blur</span></li>
+                          <li><span class="arq">WaterEffects</span> <span class="obs">— waves, caustics, refraction</span></li>
+                          <li><span class="pkg">tacz</span> <span class="obs">— optional weapon realism</span>
                             <ul>
-                              <li><span class="arq">TaczBridge</span> <span class="obs">- ponte por reflection</span></li>
-                              <li><span class="arq">TaczGunRealism</span> <span class="obs">— mola da arma (2ª ordem)</span></li>
-                              <li><span class="arq">TaczSway</span> <span class="obs">— balanço ao correr / ADS</span></li>
+                              <li><span class="arq">TaczBridge</span> <span class="obs">— reflection bridge</span></li>
+                              <li><span class="arq">TaczGunRealism</span> <span class="obs">— weapon spring (2nd order)</span></li>
+                              <li><span class="arq">TaczSway</span> <span class="obs">— run sway / ADS</span></li>
                             </ul>
                           </li>
                         </ul>
                       </li>
 
                       <li><span class="pkg">compat</span>
-                        <ul><li><span class="arq">IrisCompat</span> <span class="obs">— detecção de shaderpack</span></li></ul>
+                        <ul><li><span class="arq">IrisCompat</span> <span class="obs">— shaderpack detection</span></li></ul>
                       </li>
                       <li><span class="pkg">config</span>
-                        <ul><li><span class="arq">BodycamConfig</span> <span class="obs">— JSON + validação</span></li></ul>
+                        <ul><li><span class="arq">BodycamConfig</span> <span class="obs">— JSON + validation</span></li></ul>
                       </li>
                       <li><span class="pkg">core</span>
                         <ul>
-                          <li><span class="arq">GameState</span> <span class="obs">— contexto de jogo</span></li>
-                          <li><span class="arq">RenderCoordinator</span> <span class="obs">— fase de render</span></li>
+                          <li><span class="arq">GameState</span> <span class="obs">— game context</span></li>
+                          <li><span class="arq">RenderCoordinator</span> <span class="obs">— render phase</span></li>
                         </ul>
                       </li>
                       <li><span class="pkg">gui</span>
-                        <ul><li><span class="arq">BodycamConfigScreen</span> <span class="obs">— tela de configuração</span></li></ul>
+                        <ul><li><span class="arq">BodycamConfigScreen</span> <span class="obs">— settings screen</span></li></ul>
                       </li>
-                      <li><span class="pkg">mixin</span> <span class="obs">— pontos de injeção</span>
+                      <li><span class="pkg">mixin</span> <span class="obs">— injection points</span>
                         <ul>
                           <li><span class="arq">CameraMixin</span> <span class="obs">— getRotation / update</span></li>
                           <li><span class="arq">GameRendererMixin</span> <span class="obs">— renderWorld</span></li>
-                          <li><span class="arq">EntityMixin</span> <span class="obs">— passos sincronizados ao áudio</span></li>
-                          <li><span class="arq">ClientPlayerEntityMixin</span> <span class="obs">— estado do jogador</span></li>
-                          <li><span class="arq">TaczGunTransformMixin</span> <span class="obs">— transform da arma</span></li>
-                          <li><span class="arq">BodycamMixinPlugin</span> <span class="obs">— habilita/desabilita mixins</span></li>
+                          <li><span class="arq">EntityMixin</span> <span class="obs">— footsteps synced to audio</span></li>
+                          <li><span class="arq">ClientPlayerEntityMixin</span> <span class="obs">— player state</span></li>
+                          <li><span class="arq">TaczGunTransformMixin</span> <span class="obs">— weapon transform (TACZ only)</span></li>
+                          <li><span class="arq">BodycamMixinPlugin</span> <span class="obs">— enables/disables mixins</span></li>
                         </ul>
                       </li>
                     </ul>
@@ -156,30 +156,30 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
                 </ul>
               </div>
               <figcaption>
-                dev.bodycam — 6 pacotes, 19 classes. Os mixins são o único contato
-                com o código do Minecraft; todo o resto é puro client-side.
+                dev.bodycam — 6 packages, 19 classes. The mixins are the only contact
+                with Minecraft's code; everything else is pure client-side.
               </figcaption>
             </figure>
           </div></div>
         </div>
       </article>
 
-      <!-- ── 2. Mola → arquitetura temporal ──────────────────────── -->
+      <!-- ── 2. Spring → temporal architecture ───────────────────── -->
       <article class="card acordeao">
         <button class="acordeao__gatilho" type="button" aria-expanded="false" aria-controls="painel-temporal">
           <span class="card__ico">
             <svg class="ico" aria-hidden="true"><use href="#ico-mola"></use></svg>
           </span>
           <span class="acordeao__txt">
-            <h3>Arquitetura temporal</h3>
-            <p>O "core": por que nada parece travado nem elástico demais.</p>
+            <h3>Temporal architecture</h3>
+            <p>The core: why nothing looks jerky or too rubbery.</p>
           </span>
           <svg class="ico acordeao__chev" aria-hidden="true"><use href="#ico-chevron"></use></svg>
         </button>
         <div class="acordeao__painel" id="painel-temporal" aria-hidden="true">
           <div><div class="acordeao__conteudo">
             <figure class="diagrama" style="margin:0">
-              <svg class="fluxo" viewBox="0 0 640 168" role="img" aria-label="Fluxo temporal do efeito">
+              <svg class="fluxo" viewBox="0 0 640 168" role="img" aria-label="Temporal flow of an effect">
                 <defs>
                   <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5"
                           markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -191,89 +191,89 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
                 <text class="sub" x="67"  y="96" text-anchor="middle">System.nanoTime()</text>
 
                 <rect class="no" x="164" y="58" width="118" height="52" rx="8"/>
-                <text class="lbl" x="223" y="80" text-anchor="middle">dt real</text>
-                <text class="sub" x="223" y="96" text-anchor="middle">clamp 0.1s</text>
+                <text class="lbl" x="223" y="80" text-anchor="middle">real dt</text>
+                <text class="sub" x="223" y="96" text-anchor="middle">clamped to 0.1s</text>
 
                 <rect class="no-on" x="320" y="58" width="140" height="52" rx="8"/>
                 <text class="lbl" x="390" y="80" text-anchor="middle">Spring / Smooth</text>
                 <text class="sub" x="390" y="96" text-anchor="middle">k 100 · c 20</text>
 
                 <rect class="no" x="498" y="58" width="132" height="52" rx="8"/>
-                <text class="lbl" x="564" y="80" text-anchor="middle">matriz</text>
+                <text class="lbl" x="564" y="80" text-anchor="middle">matrix</text>
                 <text class="sub" x="564" y="96" text-anchor="middle">roll + bob</text>
 
                 <path class="seta" d="M126 84 H160"/>
                 <path class="seta" d="M282 84 H316"/>
                 <path class="seta" d="M460 84 H494"/>
 
-                <text class="sub" x="8"   y="30">O erro original: usar tickDelta/20 como dt.</text>
-                <text class="sub" x="8"   y="44">Com shaders a ~25 fps tudo rodava 2.4× mais lento.</text>
-                <text class="sub" x="320" y="150">Mola: x" = k·(alvo − x) − c·x'   →  assenta em ~0.3 s</text>
+                <text class="sub" x="8"   y="30">The original bug: using tickDelta/20 as dt.</text>
+                <text class="sub" x="8"   y="44">Under shaders at ~25 fps everything ran 2.4× slower.</text>
+                <text class="sub" x="320" y="150">Spring: x" = k·(target − x) − c·x'   →  settles in ~0.3 s</text>
               </svg>
               <figcaption>
-                Todo efeito deriva de um único delta-time real, medido com
-                <code>nanoTime()</code> e limitado a 0.1 s. Isso torna o mod
-                independente de framerate.
+                Every effect derives from a single real delta-time, measured with
+                <code>nanoTime()</code> and clamped to 0.1 s. That makes the mod
+                framerate-independent.
               </figcaption>
             </figure>
           </div></div>
         </div>
       </article>
 
-      <!-- ── 3. Respiração ───────────────────────────────────────── -->
+      <!-- ── 3. Breathing ────────────────────────────────────────── -->
       <article class="card acordeao">
         <button class="acordeao__gatilho" type="button" aria-expanded="false" aria-controls="painel-respira">
           <span class="card__ico">
             <svg class="ico" aria-hidden="true"><use href="#ico-respiracao"></use></svg>
           </span>
           <span class="acordeao__txt">
-            <h3>Respiração sincronizada</h3>
-            <p>Ciclo assimétrico casado com o OGG incluído.</p>
+            <h3>Synced breathing</h3>
+            <p>An asymmetric cycle matched to the bundled OGG.</p>
           </span>
           <svg class="ico acordeao__chev" aria-hidden="true"><use href="#ico-chevron"></use></svg>
         </button>
         <div class="acordeao__painel" id="painel-respira" aria-hidden="true">
           <div><div class="acordeao__conteudo">
             <figure class="diagrama" style="margin:0">
-              <svg class="fluxo" viewBox="0 0 640 150" role="img" aria-label="Forma do ciclo respiratório">
+              <svg class="fluxo" viewBox="0 0 640 150" role="img" aria-label="Shape of the breathing cycle">
                 <path d="M20 110 C 60 30, 120 30, 160 110" fill="none" stroke="#4ade80" stroke-width="2.2"/>
                 <path d="M160 110 C 220 60, 280 50, 340 110" fill="none" stroke="#22c55e" stroke-width="2.2"/>
                 <line x1="160" y1="24" x2="160" y2="118" stroke="#2b3d34" stroke-width="1" stroke-dasharray="3 3"/>
                 <text class="sub" x="20"  y="132">0.00 s</text>
                 <text class="lbl" x="160" y="132" text-anchor="middle">1.53 s</text>
                 <text class="sub" x="330" y="132">3.06 s</text>
-                <text class="sub" x="20"  y="24">inspiração rápida</text>
-                <text class="sub" x="180" y="24">expiração suave</text>
-                <text class="sub" x="380" y="70">+35 % após 5 s de sprint</text>
-                <text class="sub" x="380" y="88">+65 % após 20 s</text>
-                <text class="sub" x="380" y="106">reseta ao parar</text>
+                <text class="sub" x="20"  y="24">fast inhale</text>
+                <text class="sub" x="180" y="24">slow exhale</text>
+                <text class="sub" x="380" y="70">+35 % after 5 s of sprint</text>
+                <text class="sub" x="380" y="88">+65 % after 20 s</text>
+                <text class="sub" x="380" y="106">resets when you stop</text>
               </svg>
               <figcaption>
-                Expiração exatamente no ponto médio de 3.06 s, com irregularidade
-                Perlin para não soar mecânico. Volume e pitch sobem junto com o
-                esforço do sprint.
+                Exhale lands exactly on the 3.06 s midpoint, with Perlin
+                irregularity so it never sounds mechanical. Volume and pitch rise
+                together with sprint effort.
               </figcaption>
             </figure>
           </div></div>
         </div>
       </article>
 
-      <!-- ── 4. Pipeline de post-FX ──────────────────────────────── -->
+      <!-- ── 4. Post-FX pipeline ─────────────────────────────────── -->
       <article class="card acordeao">
         <button class="acordeao__gatilho" type="button" aria-expanded="false" aria-controls="painel-pipeline">
           <span class="card__ico">
             <svg class="ico" aria-hidden="true"><use href="#ico-chip"></use></svg>
           </span>
           <span class="acordeao__txt">
-            <h3>Pipeline de lentes</h3>
-            <p>A ordem exata dos efeitos, do mundo até a tela.</p>
+            <h3>Lens pipeline</h3>
+            <p>The exact order of effects, world to screen.</p>
           </span>
           <svg class="ico acordeao__chev" aria-hidden="true"><use href="#ico-chevron"></use></svg>
         </button>
         <div class="acordeao__painel" id="painel-pipeline" aria-hidden="true">
           <div><div class="acordeao__conteudo">
             <figure class="diagrama" style="margin:0">
-              <svg class="fluxo" viewBox="0 0 640 210" role="img" aria-label="Ordem do pipeline de pós-processamento">
+              <svg class="fluxo" viewBox="0 0 640 210" role="img" aria-label="Post-processing pipeline order">
                 <defs>
                   <marker id="seta2" viewBox="0 0 10 10" refX="9" refY="5"
                           markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -284,69 +284,69 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
                   <rect class="no" x="8"    y="14" width="140" height="38" rx="7"/>
                   <text class="sub" x="78"  y="37" text-anchor="middle">1 · fisheye K1/K2</text>
                   <rect class="no" x="168"  y="14" width="140" height="38" rx="7"/>
-                  <text class="sub" x="238" y="37" text-anchor="middle">2 · abertura FOV</text>
+                  <text class="sub" x="238" y="37" text-anchor="middle">2 · FOV punch</text>
                   <rect class="no" x="328"  y="14" width="140" height="38" rx="7"/>
-                  <text class="sub" x="398" y="37" text-anchor="middle">3 · aberração RGB</text>
+                  <text class="sub" x="398" y="37" text-anchor="middle">3 · RGB aberration</text>
                   <rect class="no" x="488"  y="14" width="144" height="38" rx="7"/>
-                  <text class="sub" x="560" y="37" text-anchor="middle">4 · motion blur angular</text>
+                  <text class="sub" x="560" y="37" text-anchor="middle">4 · angular motion blur</text>
 
                   <rect class="no" x="8"    y="66" width="140" height="38" rx="7"/>
-                  <text class="sub" x="78"  y="89" text-anchor="middle">5 · vinheta dupla</text>
+                  <text class="sub" x="78"  y="89" text-anchor="middle">5 · dual vignette</text>
                   <rect class="no" x="168"  y="66" width="140" height="38" rx="7"/>
-                  <text class="sub" x="238" y="89" text-anchor="middle">6 · vinheta desfocada</text>
+                  <text class="sub" x="238" y="89" text-anchor="middle">6 · blurred vignette</text>
                   <rect class="no" x="328"  y="66" width="140" height="38" rx="7"/>
-                  <text class="sub" x="398" y="89" text-anchor="middle">7 · sujeira na lente</text>
+                  <text class="sub" x="398" y="89" text-anchor="middle">7 · lens dirt</text>
                   <rect class="no" x="488"  y="66" width="144" height="38" rx="7"/>
                   <text class="sub" x="560" y="89" text-anchor="middle">8 · ghosting</text>
 
                   <rect class="no" x="8"    y="118" width="140" height="38" rx="7"/>
-                  <text class="sub" x="78"  y="141" text-anchor="middle">9 · grão de filme</text>
+                  <text class="sub" x="78"  y="141" text-anchor="middle">9 · film grain</text>
                   <rect class="no" x="168"  y="118" width="140" height="38" rx="7"/>
-                  <text class="sub" x="238" y="141" text-anchor="middle">10 · ruído sensor</text>
+                  <text class="sub" x="238" y="141" text-anchor="middle">10 · sensor noise</text>
                   <rect class="no" x="328"  y="118" width="140" height="38" rx="7"/>
-                  <text class="sub" x="398" y="141" text-anchor="middle">11 · poeira volumétrica</text>
+                  <text class="sub" x="398" y="141" text-anchor="middle">11 · volumetric dust</text>
                   <rect class="no-on" x="488" y="118" width="144" height="38" rx="7"/>
-                  <text class="sub" x="560" y="141" text-anchor="middle">12 · exposição autom.</text>
+                  <text class="sub" x="560" y="141" text-anchor="middle">12 · auto exposure</text>
                 </g>
-                <text class="sub" x="8" y="186">DoF (17 passagens) roda apenas no fundo do menu de configuração — não no mundo.</text>
-                <text class="sub" x="8" y="202">Passagens de sombra do Iris são puladas para o post-FX nunca corrompê-las.</text>
+                <text class="sub" x="8" y="186">DoF (17 passes) runs only behind the settings menu — never in the world.</text>
+                <text class="sub" x="8" y="202">Iris shadow passes are skipped so post-FX can never corrupt them.</text>
               </svg>
               <figcaption>
-                Shader core <code>bodycam:post</code>. A ordem importa: a aberração
-                cromática lê a imagem já distorcida pelo fisheye.
+                Core shader <code>bodycam:post</code>. Order matters: chromatic
+                aberration reads an image the fisheye already distorted.
               </figcaption>
             </figure>
           </div></div>
         </div>
       </article>
 
-      <!-- ── 5. Água ─────────────────────────────────────────────── -->
+      <!-- ── 5. Water ────────────────────────────────────────────── -->
       <article class="card acordeao">
         <button class="acordeao__gatilho" type="button" aria-expanded="false" aria-controls="painel-agua">
           <span class="card__ico">
             <svg class="ico" aria-hidden="true"><use href="#ico-onda"></use></svg>
           </span>
           <span class="acordeao__txt">
-            <h3>Efeitos aquáticos</h3>
-            <p>O que acontece quando você mergulha.</p>
+            <h3>Water effects</h3>
+            <p>What happens the moment you dive in.</p>
           </span>
           <svg class="ico acordeao__chev" aria-hidden="true"><use href="#ico-chevron"></use></svg>
         </button>
         <div class="acordeao__painel" id="painel-agua" aria-hidden="true">
           <div><div class="acordeao__conteudo">
             <table class="tabela">
-              <thead><tr><th>Efeito</th><th>Comportamento</th></tr></thead>
+              <thead><tr><th>Effect</th><th>Behaviour</th></tr></thead>
               <tbody>
-                <tr><td><code>Ondas de superfície</code></td><td>Deslocamento procedural na linha d'água</td></tr>
-                <tr><td><code>Cáusticas</code></td><td>Padrão gerado por ruído, projetado no fundo</td></tr>
-                <tr><td><code>Espuma</code></td><td>Borda de contato com o terreno</td></tr>
-                <tr><td><code>Refração</code></td><td>Distorção da imagem atrás da água</td></tr>
-                <tr><td><code>Névoa + tinta RGB</code></td><td>Submersão total, com resposta na lente</td></tr>
+                <tr><td><code>Surface waves</code></td><td>Procedural displacement at the waterline</td></tr>
+                <tr><td><code>Caustics</code></td><td>Noise-driven pattern projected onto the floor</td></tr>
+                <tr><td><code>Foam</code></td><td>Contact edge against the terrain</td></tr>
+                <tr><td><code>Refraction</code></td><td>Distortion of the image behind the water</td></tr>
+                <tr><td><code>Fog + RGB tint</code></td><td>Full submersion, with a lens response</td></tr>
               </tbody>
             </table>
             <p class="fraco" style="font-size:.82rem;margin:.9rem 0 0">
-              Passos também são <b>surface-aware</b>: o som e o tremor mudam conforme
-              o bloco sob o pé (grama, areia, pedra, água).
+              Footsteps are also <b>surface-aware</b>: sound and shake change with
+              the block underfoot (grass, sand, stone, water).
             </p>
           </div></div>
         </div>
@@ -359,8 +359,8 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
             <svg class="ico" aria-hidden="true"><use href="#ico-mira"></use></svg>
           </span>
           <span class="acordeao__txt">
-            <h3>Integração TACZ</h3>
-            <p>Realismo visual de armas — e só isso.</p>
+            <h3>TACZ integration</h3>
+            <p>Weapon realism — and nothing else.</p>
           </span>
           <svg class="ico acordeao__chev" aria-hidden="true"><use href="#ico-chevron"></use></svg>
         </button>
@@ -369,28 +369,29 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
             <div class="aviso" style="margin-bottom:1rem">
               <svg class="ico" aria-hidden="true"><use href="#ico-aviso"></use></svg>
               <div>
-                <b>Nunca toca em raycasts, balas ou mira.</b> Sem o TACZ instalado os
-                mixins se desabilitam sozinhos via <code>BodycamMixinPlugin</code>.
+                <b>It never touches raycasts, bullets or aiming.</b> Without TACZ
+                installed the mixins disable themselves via
+                <code>BodycamMixinPlugin</code>.
               </div>
             </div>
 
-            <h4 style="margin:0 0 .5rem">Opcional de verdade</h4>
+            <h4 style="margin:0 0 .5rem">Genuinely optional</h4>
             <p style="color:var(--txt-2);font-size:.9rem;margin:0 0 1rem">
-              O TACZ não é uma dependência — é um bônus. O mod <b>compila, instala e
-              roda</b> em uma máquina que nunca viu um jar do TACZ. Duas coisas garantem
-              isso, e as duas são sobre <i>compilação</i>, não sobre runtime:
+              TACZ is not a dependency — it is a bonus. The mod <b>compiles, installs
+              and runs</b> on a machine that has never seen a TACZ jar. Two things
+              guarantee that, and both are about <i>compilation</i>, not runtime:
             </p>
 
             <table class="tabela" style="margin-bottom:1rem">
-              <thead><tr><th>Peça</th><th>Sem o jar do TACZ</th></tr></thead>
+              <thead><tr><th>Piece</th><th>Without the TACZ jar</th></tr></thead>
               <tbody>
                 <tr>
                   <td><code>TaczBridge</code></td>
-                  <td>Compila. Não tem <b>nenhum</b> <code>import com.tacz.*</code> — resolve a API por <b>reflection</b>.</td>
+                  <td>Compiles. It has <b>no</b> <code>import com.tacz.*</code> at all — it resolves the API via <b>reflection</b>.</td>
                 </tr>
                 <tr>
                   <td><code>TaczGunTransformMixin</code></td>
-                  <td>Fica de fora. Precisa <code>@Mixin</code> numa classe do TACZ, então não há como compilá-lo.</td>
+                  <td>Left out. It must <code>@Mixin</code> a TACZ class, so there is no way to compile it.</td>
                 </tr>
               </tbody>
             </table>
@@ -398,34 +399,37 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
             <div class="aviso" style="margin-bottom:1rem">
               <svg class="ico" aria-hidden="true"><use href="#ico-git"></use></svg>
               <div>
-                <b>Nada de terceiro entra no repositório.</b> O jar do TACZ é ignorado pelo
-                git, nenhum código dele é copiado, e nenhuma classe dele é embutida no jar
-                final — o <code>build.gradle</code> só o usa como <code>modCompileOnly</code>.
+                <b>No third-party code enters the repository.</b> The TACZ jar is
+                gitignored, none of its code is copied, and none of its classes are
+                bundled into the final jar — <code>build.gradle</code> only consumes it
+                as <code>modCompileOnly</code>.
               </div>
             </div>
 
-            <h4 style="margin:0 0 .5rem">Como a reflection funciona</h4>
+            <h4 style="margin:0 0 .5rem">How the reflection works</h4>
             <p style="color:var(--txt-2);font-size:.9rem;margin:0 0 .8rem">
-              Dois detalhes tornam isso barato e à prova de quebra:
+              Two details make this cheap and hard to break:
             </p>
             <ul style="color:var(--txt-2);font-size:.9rem;padding-left:1.1rem;margin:0 0 1rem">
-              <li>O bus de eventos do TACZ <b>é</b> o bus do Fabric
-                (<code>net.fabricmc.fabric.api.event.Event</code>), que já é dependência
-                sua. Só o <i>tipo do listener</i> vira proxy — o registro é uma chamada normal.</li>
-              <li>Tipos do Minecraft <b>nunca são nomeados</b>. O <code>ClientPlayerEntity</code>
-                vivo é passado direto pra chamada reflexiva, então o código não amarra a nenhum
-                mapeamento.</li>
-              <li>A busca é por <b>nome + aridade</b>, não por descritor. Se o TACZ renomear um
-                método, a ponte desliga sozinha com um log — nunca um <code>LinkageError</code>.</li>
+              <li>TACZ's event bus <b>is</b> the Fabric event bus
+                (<code>net.fabricmc.fabric.api.event.Event</code>), which you already
+                depend on. Only the <i>listener type</i> becomes a proxy — registration is
+                an ordinary call.</li>
+              <li>Minecraft types are <b>never named</b>. The live
+                <code>ClientPlayerEntity</code> is handed straight to the reflective call,
+                so the code is tied to no mapping.</li>
+              <li>Lookups match by <b>name + arity</b>, not by descriptor. If TACZ ever
+                renames a method the bridge disables itself with a log — never a
+                <code>LinkageError</code>.</li>
             </ul>
 
-            <h4 style="margin:0 0 .5rem">O que o TACZ adiciona</h4>
+            <h4 style="margin:0 0 .5rem">What TACZ adds</h4>
             <ul style="color:var(--txt-2);font-size:.9rem;padding-left:1.1rem;margin:0">
-              <li><b>Mola da arma</b> de 2ª ordem, com overshoot — o recoil "pesa".</li>
-              <li><b>Baixar arma</b> ao correr e ao andar agachado.</li>
-              <li><b>Balanço ao correr</b> e estabilização durante a mira (ADS).</li>
-              <li><b>Resposta a recarga</b> e proximidade de parede.</li>
-              <li><b>Kit de phase D</b>: inércia, movement-to-aim, recoil kick.</li>
+              <li><b>Weapon spring</b> of 2nd order with overshoot — recoil has weight.</li>
+              <li><b>Weapon lower</b> while sprinting and while crawling.</li>
+              <li><b>Run sway</b> plus stabilization while aiming (ADS).</li>
+              <li><b>Reload response</b> and wall proximity.</li>
+              <li><b>Phase D kit</b>: inertia, movement-to-aim, recoil kick.</li>
             </ul>
           </div></div>
         </div>
@@ -435,50 +439,50 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
   </div>
 </section>
 
-<!-- ═══════════════ ARQUITETURA ═══════════════ -->
+<!-- ═══════════════ ARCHITECTURE ═══════════════ -->
 <section class="secao" id="arquitetura">
   <div class="env">
     <div class="cabec">
       <span class="etiqueta">
         <svg class="ico" aria-hidden="true"><use href="#ico-escudo"></use></svg>
-        Arquitetura
+        Architecture
       </span>
-      <h2>O contrato: client-side puro</h2>
+      <h2>The contract: pure client-side</h2>
       <p>
-        O mod altera <i>apenas</i> como a câmera é desenhada. Nada de vantagem
-        competitiva — por construção, não por promessa.
+        The mod changes <i>only</i> how the camera is drawn. No competitive
+        advantage — by construction, not by promise.
       </p>
     </div>
 
     <div class="grade grade--3">
       <div class="card">
         <div class="card__ico"><svg class="ico" aria-hidden="true"><use href="#ico-escudo"></use></svg></div>
-        <h3>O que ele faz</h3>
+        <h3>What it does</h3>
         <ul>
-          <li>Reescreve a matriz de renderização do mundo</li>
-          <li>Adiciona shaders de pós-processamento</li>
-          <li>Toca sons de respiração locais</li>
-          <li>Salva config em <code>config/bodycam.json</code></li>
+          <li>Rewrites the world render matrix</li>
+          <li>Adds post-processing shaders</li>
+          <li>Plays local breathing audio</li>
+          <li>Saves config to <code>config/bodycam.json</code></li>
         </ul>
       </div>
       <div class="card">
         <div class="card__ico"><svg class="ico" aria-hidden="true"><use href="#ico-mira"></use></svg></div>
-        <h3>O que ele NÃO faz</h3>
+        <h3>What it does NOT do</h3>
         <ul>
-          <li>Não altera velocidade ou colisão</li>
-          <li>Não mexe em hitboxes nem raycasts</li>
-          <li>Não envia nada ao servidor</li>
-          <li>Não afeta balas ou mira do TACZ</li>
+          <li>No change to speed or collision</li>
+          <li>No touching of hitboxes or raycasts</li>
+          <li>Nothing is sent to the server</li>
+          <li>No effect on TACZ bullets or aiming</li>
         </ul>
       </div>
       <div class="card">
         <div class="card__ico"><svg class="ico" aria-hidden="true"><use href="#ico-git"></use></svg></div>
-        <h3>Pontos de injeção</h3>
+        <h3>Injection points</h3>
         <ul>
-          <li><code>CameraMixin</code> — rotação da câmera</li>
-          <li><code>GameRendererMixin</code> — fase de render</li>
-          <li><code>EntityMixin</code> — passos ↔ áudio</li>
-          <li><code>TaczGunTransformMixin</code> — arma <span class="fraco" style="font-size:.8em">(só com TACZ)</span></li>
+          <li><code>CameraMixin</code> — camera rotation</li>
+          <li><code>GameRendererMixin</code> — render phase</li>
+          <li><code>EntityMixin</code> — footsteps ↔ audio</li>
+          <li><code>TaczGunTransformMixin</code> — weapon <span class="fraco" style="font-size:.8em">(TACZ only)</span></li>
         </ul>
       </div>
     </div>
@@ -491,112 +495,112 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
     <div class="cabec">
       <span class="etiqueta">
         <svg class="ico" aria-hidden="true"><use href="#ico-pulso"></use></svg>
-        Em ação
+        In action
       </span>
       <h2>Previews</h2>
-      <p>Todos os clipes ficam em <code>gameplay/</code> no repositório.</p>
+      <p>Every clip lives in <code>gameplay/</code> in the repository.</p>
     </div>
 
     <div class="grade grade--2">
       <figure class="cam" style="margin:0">
         <div class="cam__barra"><span class="ponto-rec"></span><b>REC</b><span>· flying</span></div>
         <img src="https://raw.githubusercontent.com/jhfuheuiwfh/nexus-bodycam-mod/main/gameplay/flying.gif"
-             alt="Câmera sacudindo com força durante voo" loading="lazy" decoding="async">
+             alt="Camera shaking hard while flying" loading="lazy" decoding="async">
       </figure>
       <figure class="cam" style="margin:0">
         <div class="cam__barra"><span class="ponto-rec"></span><b>REC</b><span>· roll</span></div>
         <img src="https://raw.githubusercontent.com/jhfuheuiwfh/nexus-bodycam-mod/main/gameplay/roll%26motion-blur.gif"
-             alt="Rolagem real com motion blur angular" loading="lazy" decoding="async">
+             alt="Real roll with angular motion blur" loading="lazy" decoding="async">
       </figure>
       <figure class="cam" style="margin:0">
         <div class="cam__barra"><span class="ponto-rec"></span><b>REC</b><span>· gun</span></div>
         <img src="https://raw.githubusercontent.com/jhfuheuiwfh/nexus-bodycam-mod/main/gameplay/gun.gif"
-             alt="Mola de arma do TACZ com recoil e sway" loading="lazy" decoding="async">
+             alt="TACZ weapon spring with recoil and sway" loading="lazy" decoding="async">
       </figure>
       <figure class="cam" style="margin:0">
         <div class="cam__barra"><span class="ponto-rec"></span><b>REC</b><span>· steps</span></div>
         <img src="https://raw.githubusercontent.com/jhfuheuiwfh/nexus-bodycam-mod/main/gameplay/smooth-steps.gif"
-             alt="Passos suavizados com amortecimento de pouso" loading="lazy" decoding="async">
+             alt="Smoothed footsteps with landing damping" loading="lazy" decoding="async">
       </figure>
     </div>
   </div>
 </section>
 
-<!-- ═══════════════ INSTALAÇÃO ═══════════════ -->
+<!-- ═══════════════ INSTALLATION ═══════════════ -->
 <section class="secao">
   <div class="env">
     <div class="cabec">
       <span class="etiqueta">
         <svg class="ico" aria-hidden="true"><use href="#ico-baixar"></use></svg>
-        Instalação
+        Installation
       </span>
-      <h2>Três passos</h2>
-      <p>Requisitos: Fabric Loader ≥ 0.15.11 · Fabric API · Java 17+.</p>
+      <h2>Three steps</h2>
+      <p>Requirements: Fabric Loader ≥ 0.15.11 · Fabric API · Java 17+.</p>
     </div>
 
     <div class="passos" style="margin-bottom:2rem">
       <div class="passo">
         <div>
-          <h3>Instale o Fabric Loader</h3>
-          <p>Para Minecraft 1.20.1. Baixe no <a href="https://fabricmc.net/use/installer/" rel="noopener">site oficial</a>.</p>
+          <h3>Install Fabric Loader</h3>
+          <p>For Minecraft 1.20.1. Get it from the <a href="https://fabricmc.net/use/installer/" rel="noopener">official site</a>.</p>
         </div>
       </div>
       <div class="passo">
         <div>
-          <h3>Baixe o JAR da release</h3>
-          <p>Pegue <code>NEXUS-bodycam-1.4.3+1.20.1.jar</code> na <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/releases/download/v1.4.3%2B1.20.1/NEXUS-bodycam-1.4.3+1.20.1.jar" rel="noopener">release mais recente</a>.</p>
+          <h3>Download the JAR</h3>
+          <p>Grab <code>NEXUS-bodycam-1.4.3+1.20.1.jar</code> from the <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/releases/download/v1.4.3%2B1.20.1/NEXUS-bodycam-1.4.3+1.20.1.jar" rel="noopener">latest release</a> — that link goes straight to the file.</p>
         </div>
       </div>
       <div class="passo">
         <div>
-          <h3>Solte na pasta <code>mods/</code></h3>
-          <p>Opcional: <a href="https://modrinth.com/mod/modmenu" rel="noopener">Mod Menu</a> para a tela de config, <a href="https://modrinth.com/mod/tacz" rel="noopener">TaCZ</a> para armas, <a[...]
+          <h3>Drop it in <code>mods/</code></h3>
+          <p>Optional: <a href="https://modrinth.com/mod/modmenu" rel="noopener">Mod Menu</a> for the config screen, <a href="https://modrinth.com/mod/tacz" rel="noopener">TaCZ</a> for guns, <a href="https://modrinth.com/mod/iris" rel="noopener">Iris</a> for shaders.</p>
         </div>
       </div>
     </div>
 
-    <h3 style="margin-bottom:.8rem">Compilar a partir do código</h3>
+    <h3 style="margin-bottom:.8rem">Building from source</h3>
     <pre><code>git clone https://github.com/jhfuheuiwfh/nexus-bodycam-mod.git
 cd nexus-bodycam-mod
 ./gradlew build          # Windows: gradlew.bat build</code></pre>
     <p class="fraco" style="font-size:.85rem;margin-top:.8rem">
-      O artefato fica em <code>build/libs/</code>. <b>Compila sem o TACZ</b> — nesse caso o
-      mixin da arma fica de fora e a ponte fica desligada. Para o pacote completo, coloque o
-      jar do TACZ em <code>libs/</code> antes de buildar. O <code>libs/</code> é ignorado pelo
-      git porque esse jar é de terceiros.
+      The artifact lands in <code>build/libs/</code>. <b>It compiles without TACZ</b> — in
+      that case the weapon mixin is left out and the bridge stays off. For the full
+      package, put the TACZ jar in <code>libs/</code> before building.
+      <code>libs/</code> is gitignored because that jar is third-party.
     </p>
   </div>
 </section>
 
-<!-- ═══════════════ COMPATIBILIDADE ═══════════════ -->
+<!-- ═══════════════ COMPATIBILITY ═══════════════ -->
 <section class="secao secao--alt">
   <div class="env">
     <div class="cabec">
       <span class="etiqueta">
         <svg class="ico" aria-hidden="true"><use href="#ico-escudo"></use></svg>
-        Compatibilidade
+        Compatibility
       </span>
-      <h2>Funciona com o seu setup</h2>
+      <h2>Works with your setup</h2>
     </div>
 
     <table class="tabela" style="margin-bottom:1.8rem">
-      <thead><tr><th>Mod</th><th>Status</th><th>Observação</th></tr></thead>
+      <thead><tr><th>Mod</th><th>Status</th><th>Notes</th></tr></thead>
       <tbody>
-        <tr><td>Fabric API</td><td><b style="color:var(--acento)">Obrigatório</b></td><td>—</td></tr>
-        <tr><td>Mod Menu</td><td>Opcional</td><td>Abre a tela de configuração in-game</td></tr>
-        <tr><td>TaCZ</td><td>Opcional</td><td>Realismo visual de armas (só visual). Ligado por reflection — sem ele o mod segue funcionando</td></tr>
-        <tr><td>Iris / Sodium</td><td>Compatível</td><td>Passagens de sombra são puladas</td></tr>
-        <tr><td>Shaderpacks bodycam</td><td>Compatível</td><td>Use "Sync with Shader"</td></tr>
-        <tr><td>Distant Horizons</td><td>Compatível</td><td>—</td></tr>
+        <tr><td>Fabric API</td><td><b style="color:var(--acento)">Required</b></td><td>—</td></tr>
+        <tr><td>Mod Menu</td><td>Optional</td><td>Opens the in-game settings screen</td></tr>
+        <tr><td>TaCZ</td><td>Optional</td><td>Weapon realism (visual only). Wired via reflection — without it the mod still works</td></tr>
+        <tr><td>Iris / Sodium</td><td>Compatible</td><td>Shadow passes are skipped</td></tr>
+        <tr><td>Bodycam shaderpacks</td><td>Compatible</td><td>Use "Sync with Shader"</td></tr>
+        <tr><td>Distant Horizons</td><td>Compatible</td><td>—</td></tr>
       </tbody>
     </table>
 
     <div class="aviso">
       <svg class="ico" aria-hidden="true"><use href="#ico-aviso"></use></svg>
       <div>
-        <b>Cuidado com a compatibilidade entre mods.</b> Semântica de versão:
-        <code>1.0.x</code> = correção pequena · <code>1.x.0</code> = feature grande ·
-        <code>x.0.0</code> = rework pesado. Se algo quebrar, teste antes de culpar outro mod.
+        <b>Watch out for mod compatibility.</b> Versioning semantics:
+        <code>1.0.x</code> = small fix · <code>1.x.0</code> = big feature ·
+        <code>x.0.0</code> = heavy rework. If something breaks, test before blaming another mod.
       </div>
     </div>
   </div>
@@ -610,27 +614,27 @@ cd nexus-bodycam-mod
         <svg class="ico" aria-hidden="true"><use href="#ico-raio"></use></svg>
         Roadmap
       </span>
-      <h2>O que falta validar</h2>
-      <p>Implementado, mas ainda não confirmado em jogo com folga.</p>
+      <h2>Still to be validated</h2>
+      <p>Implemented, but not yet confirmed comfortably in game.</p>
     </div>
 
     <div class="grade grade--2">
       <div class="card">
-        <h3>Precisa de playtest</h3>
+        <h3>Needs playtesting</h3>
         <ul>
-          <li>Vinheta desfocada (v1.4.3) — slider 0…1, padrão 0.6</li>
-          <li>Alinhamento da mira ao minerar (chest cam on/off)</li>
-          <li>Exaustão da respiração em 5 s / 20 s de sprint</li>
-          <li>Sensação do TACZ: mola, baixar, sway, recoil</li>
+          <li>Blurred vignette (v1.4.3) — slider 0…1, default 0.6</li>
+          <li>Aim alignment while mining (chest cam on/off)</li>
+          <li>Breathing exhaustion at 5 s / 20 s of sprint</li>
+          <li>TACZ feel: spring, lowering, sway, recoil</li>
         </ul>
       </div>
       <div class="card">
-        <h3>Ideias sem data</h3>
+        <h3>Ideas without a date</h3>
         <ul>
-          <li>Overlay REC de bodycam (timestamp, bateria, ponto piscando)</li>
-          <li>Compartilhar presets via import de <code>bodycam.json</code></li>
-          <li>Script que baixa o jar do TACZ para <code>libs/</code></li>
-          <li>Localização além de <code>en_us</code> / <code>pt_br</code></li>
+          <li>Bodycam REC overlay (timestamp, battery, blinking dot)</li>
+          <li>Share presets by importing a <code>bodycam.json</code></li>
+          <li>Script that fetches the TACZ jar into <code>libs/</code></li>
+          <li>Localization beyond <code>en_us</code> / <code>pt_br</code></li>
         </ul>
       </div>
     </div>
@@ -643,36 +647,36 @@ cd nexus-bodycam-mod
     <div class="cabec">
       <span class="etiqueta">
         <svg class="ico" aria-hidden="true"><use href="#ico-livro"></use></svg>
-        Transparência
+        Transparency
       </span>
-      <h2>Divulgações</h2>
+      <h2>Disclosures</h2>
     </div>
 
     <div class="grade grade--2">
       <div class="card">
-        <h3>Uso de IA</h3>
+        <h3>AI usage</h3>
         <p>
-          Este projeto é <b>substantialmente gerado por IA</b> e assume isso
-          abertamente. boa parte do <b>código, shaders, assets e documentação</b>
-          foi produzido por agentes de IA, com o autor humano direcionando o
-          trabalho, testando in-game e fazendo as decisões finais.
+          This project is <b>substantially AI-generated</b> and owns that openly. Most of
+          the <b>code, shaders, assets and documentation</b> was produced by AI agents,
+          with the human author directing the work, playtesting in game and making the
+          final calls.
         </p>
         <p style="margin-bottom:0">
-          Detalhes completos em
+          Full details in
           <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/blob/main/AI-TRANSPARENCY.md" rel="noopener">AI-TRANSPARENCY.md</a>.
         </p>
       </div>
       <div class="card">
-        <h3>Avisos e licença</h3>
+        <h3>Warnings and license</h3>
         <p>
-          <b>Fotosensibilidade:</b> este projeto pode conter luzes piscantes.
+          <b>Photosensitivity:</b> this project may contain flashing lights.
         </p>
         <p>
-          Lançado sob <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/blob/main/LICENSE" rel="noopener">GNU GPL v3.0</a>.
+          Released under <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/blob/main/LICENSE" rel="noopener">GNU GPL v3.0</a>.
         </p>
         <p style="margin-bottom:0">
-          Projeto independente. Não afiliado, patrocinado ou endossado pela Mojang
-          Studios ou Microsoft. Minecraft é marca dessas empresas.
+          Independent project. Not affiliated with, sponsored by or endorsed by Mojang
+          Studios or Microsoft. Minecraft is a trademark of those companies.
         </p>
       </div>
     </div>

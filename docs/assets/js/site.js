@@ -1,33 +1,34 @@
 /* =========================================================================
    NEXUS Bodycam — docs
-   JS mínimo: acordeões dos ícones (árvore/diagrama) + copiar código.
-   Sem dependências. Tudo degrada bem sem JS (conteúdo segue legível).
+   Minimal JS: the icon accordions (tree/diagram) + copy code.
+   No dependencies. Everything degrades gracefully without JS (content
+   stays readable).
    ========================================================================= */
 (function () {
   "use strict";
 
-  /* ── Acordeões ─────────────────────────────────────────────────────
-     Marca o gatilho com aria-expanded. O CSS cuida da animação
-     (grid-template-rows 0fr -> 1fr), então aqui só alternamos o estado. */
+  /* ── Accordions ─────────────────────────────────────────────────────
+     Marks the trigger with aria-expanded. CSS owns the animation
+     (grid-template-rows 0fr -> 1fr), so all we do here is flip state. */
   document.querySelectorAll(".acordeao__gatilho").forEach(function (gat) {
     gat.addEventListener("click", function () {
-      var aberto = gat.getAttribute("aria-expanded") === "true";
-      gat.setAttribute("aria-expanded", String(!aberto));
+      var open = gat.getAttribute("aria-expanded") === "true";
+      gat.setAttribute("aria-expanded", String(!open));
 
-      // acessibilidade: esconde o painel do fluxo de tabulação quando fechado
-      var painel = gat.nextElementSibling;
-      if (painel) {
-        painel.setAttribute("aria-hidden", String(aberto));
-        painel.querySelectorAll("a, button").forEach(function (f) {
-          if (aberto) { f.setAttribute("tabindex", "-1"); }
+      // accessibility: hide the panel from the tab order while collapsed
+      var panel = gat.nextElementSibling;
+      if (panel) {
+        panel.setAttribute("aria-hidden", String(open));
+        panel.querySelectorAll("a, button").forEach(function (f) {
+          if (open) { f.setAttribute("tabindex", "-1"); }
           else { f.removeAttribute("tabindex"); }
         });
       }
     });
   });
 
-  /* ── Copiar código ────────────────────────────────────────────────
-     Cria o botão em todo <pre class="bloco"> automaticamente. */
+  /* ── Copy code ────────────────────────────────────────────────────
+     Creates the button on every <pre class="bloco"> automatically. */
   document.querySelectorAll("pre").forEach(function (pre) {
     var wrap = document.createElement("div");
     wrap.className = "bloco";
@@ -37,57 +38,57 @@
     var btn = document.createElement("button");
     btn.type = "button";
     btn.className = "bloco__copia";
-    btn.textContent = "copiar";
-    btn.setAttribute("aria-label", "Copiar código");
+    btn.textContent = "copy";
+    btn.setAttribute("aria-label", "Copy code");
     wrap.appendChild(btn);
 
     btn.addEventListener("click", function () {
       var txt = pre.innerText;
-      var ok = function () {
-        btn.textContent = "copiado!";
+      var done = function () {
+        btn.textContent = "copied!";
         btn.style.color = "var(--acento)";
         setTimeout(function () {
-          btn.textContent = "copiar";
+          btn.textContent = "copy";
           btn.style.color = "";
         }, 1600);
       };
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(txt).then(ok, function () {});
+        navigator.clipboard.writeText(txt).then(done, function () {});
       } else {
-        // fallback para navegadores sem Clipboard API
+        // fallback for browsers without the Clipboard API
         var ta = document.createElement("textarea");
         ta.value = txt;
         ta.style.position = "fixed";
         ta.style.opacity = "0";
         document.body.appendChild(ta);
         ta.select();
-        try { document.execCommand("copy"); ok(); } catch (e) {}
+        try { document.execCommand("copy"); done(); } catch (e) {}
         document.body.removeChild(ta);
       }
     });
   });
-  /* ── Timecode REC do hero ─────────────────────────────────────────
-     Só cosmético: imita o contador de uma câmera gravando.
-     Para quando a aba fica oculta (não gasta CPU à toa). */
+  /* ── Hero REC timecode ───────────────────────────────────────────
+     Purely cosmetic: imitates the counter of a recording camera.
+     Stops when the tab is hidden (no wasted CPU). */
   var tc = document.getElementById("tc");
   if (tc) {
-    var t0 = Date.now(), tique = null;
+    var t0 = Date.now(), tick = null;
 
-    function pintar() {
+    function paint() {
       var s = Math.floor((Date.now() - t0) / 1000);
       var hh = String(Math.floor(s / 3600)).padStart(2, "0");
       var mm = String(Math.floor((s % 3600) / 60)).padStart(2, "0");
       var ss = String(s % 60).padStart(2, "0");
       tc.textContent = hh + ":" + mm + ":" + ss;
     }
-    function ligar()  { if (!tique) { tique = setInterval(pintar, 1000); pintar(); } }
-    function desligar(){ clearInterval(tique); tique = null; }
+    function on()  { if (!tick) { tick = setInterval(paint, 1000); paint(); } }
+    function off() { clearInterval(tick); tick = null; }
 
-    // respeita quem prefere menos movimento/animação
+    // respect people who prefer less motion/animation
     if (!window.matchMedia || !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      ligar();
+      on();
       document.addEventListener("visibilitychange", function () {
-        if (document.hidden) { desligar(); } else { ligar(); }
+        if (document.hidden) { off(); } else { on(); }
       });
     }
   }

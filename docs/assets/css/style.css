@@ -1,7 +1,7 @@
 /* =========================================================================
-   NEXUS Bodycam — Documentação
-   Tema escuro "bodycam / HUD de gravação".
-   Ícones: transparentes por padrão, herdam cor via currentColor.
+   NEXUS Bodycam — Documentation
+   Dark "bodycam / recording HUD" theme.
+   Icons: transparent by default, inherit colour via currentColor.
    ========================================================================= */
 
 :root {
@@ -44,7 +44,7 @@ body {
   overflow-x: hidden;
 }
 
-/* leve brilho de vinheta no fundo da página inteira */
+/* faint vignette glow behind the whole page */
 body::before {
   content: "";
   position: fixed;
@@ -79,7 +79,7 @@ img { height: auto; border-radius: var(--raio-s); }
 }
 .skip:focus { left: 0; }
 
-/* ── ícones ───────────────────────────────────────────────────────── */
+/* ── icons ───────────────────────────────────────────────────────── */
 .ico {
   width: 1.15em; height: 1.15em;
   flex: none;
@@ -88,7 +88,7 @@ img { height: auto; border-radius: var(--raio-s); }
   vertical-align: -.18em;
 }
 
-/* ── textura de scanlines (só no topo, bem discreta) ──────────────── */
+/* ── scanline texture (top only, very subtle) ──────────────── */
 .scanlines {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
   opacity: .35;
@@ -189,7 +189,7 @@ img { height: auto; border-radius: var(--raio-s); }
 }
 .pill b { color: var(--acento); font-weight: 500; }
 
-/* janela de preview estilo câmera */
+/* camera-style preview window */
 .cam {
   position: relative;
   border: 1px solid var(--borda-forte);
@@ -247,7 +247,7 @@ img { height: auto; border-radius: var(--raio-s); }
 }
 .card__ico .ico { width: 22px; height: 22px; }
 
-/* card "acordeão" — o ícone abre o diagrama */
+/* "accordion" card — the icon opens the diagram */
 .acordeao { overflow: hidden; }
 .acordeao__gatilho {
   display: flex; align-items: flex-start; gap: .95rem;
@@ -273,7 +273,7 @@ img { height: auto; border-radius: var(--raio-s); }
 .acordeao__painel > div { overflow: hidden; min-height: 0; }
 .acordeao__conteudo { padding-top: 1.25rem; }
 
-/* ══ ÁRVORE / DIAGRAMA ═════════════════════════════════════════════ */
+/* ══ TREE / DIAGRAM ═════════════════════════════════════════════ */
 .diagrama {
   border: 1px solid var(--borda);
   border-radius: var(--raio-s);
@@ -286,7 +286,7 @@ img { height: auto; border-radius: var(--raio-s); }
   margin-top: .8rem; letter-spacing: .04em;
 }
 
-/* árvore genealógica do código */
+/* code family tree */
 .arvore { font-family: var(--mono); font-size: .8rem; line-height: 1.85; min-width: max-content; }
 .arvore ul { list-style: none; margin: 0; padding-left: 1.35rem; position: relative; }
 .arvore > ul { padding-left: 0; }
@@ -323,7 +323,7 @@ img { height: auto; border-radius: var(--raio-s); }
 .tabela tbody tr:hover td { background: rgba(255,255,255,.017); }
 .tabela code { color: var(--acento); }
 
-/* ══ BLOCOS DE CÓDIGO ══════════════════════════════════════════════ */
+/* ══ CODE BLOCKS ══════════════════════════════════════════════ */
 code { font-family: var(--mono); font-size: .86em; }
 :not(pre) > code {
   background: var(--painel-2); border: 1px solid var(--borda);
@@ -376,7 +376,7 @@ pre code { background: none; border: 0; padding: 0; color: inherit; }
 .aviso .ico { color: var(--ambar); width: 20px; height: 20px; margin-top: .1rem; }
 .aviso b { color: var(--txt); }
 
-/* ══ MÉTRICAS ══════════════════════════════════════════════════════ */
+/* ══ METRICS ══════════════════════════════════════════════════════ */
 .metricas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
 .metrica {
   background: var(--painel); border: 1px solid var(--borda);
@@ -385,7 +385,7 @@ pre code { background: none; border: 0; padding: 0; color: inherit; }
 .metrica b { display: block; font-size: 1.9rem; color: var(--acento); font-family: var(--mono); line-height: 1.1; }
 .metrica span { font-size: .78rem; color: var(--fraco); font-family: var(--mono); }
 
-/* ══ RODAPÉ ════════════════════════════════════════════════════════ */
+/* ══ FOOTER ════════════════════════════════════════════════════════ */
 .rodape { border-top: 1px solid var(--borda); background: var(--bg-2); margin-top: 4rem; }
 .rodape__in {
   max-width: var(--larg); margin: 0 auto; padding: 3rem 1.4rem 2rem;
@@ -405,7 +405,7 @@ pre code { background: none; border: 0; padding: 0; color: inherit; }
   border-top: 1px solid var(--borda); padding-top: 1.6rem;
 }
 
-/* ══ CONTEÚDO MARKDOWN (changelog / devnotes) ══════════════════════ */
+/* ══ MARKDOWN CONTENT (changelog / devnotes) ══════════════════════ */
 .doc-md { max-width: 100%; }
 .doc-md > h1:first-child {
   font-size: clamp(1.7rem, 3.4vw, 2.3rem);
