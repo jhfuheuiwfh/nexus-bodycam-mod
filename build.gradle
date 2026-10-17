@@ -45,6 +45,25 @@ loom {
     accessWidenerPath = file("src/main/resources/bodycam.accesswidener")
 }
 
+// TACZ is an OPTIONAL integration and its jar is third-party, so it is never
+// committed (libs/*.jar is gitignored).
+//
+// TaczBridge.java has no compile-time dependency on TACZ (it resolves the API
+// reflectively), but TaczGunTransformMixin.java must @Mixin a TACZ class
+// directly, so it can only be compiled when that jar is present. Skip it on a
+// clean clone instead of failing the build; BodycamMixinPlugin also refuses to
+// apply a Tacz mixin that is not packaged in the jar, so both cases stay safe.
+sourceSets {
+    main {
+        java {
+            if (fileTree(dir: 'libs', include: '*.jar').files.isEmpty()) {
+                logger.lifecycle('[bodycam] libs/*.jar ausente: compilando SEM o mixin TACZ (integracao opcional).')
+                exclude '**/mixin/TaczGunTransformMixin.java'
+            }
+        }
+    }
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
