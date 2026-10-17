@@ -2,7 +2,7 @@
 
 # 🗺️ NEXUS Bodycam — TODO & Roadmap
 
-**Current version:** `1.4.3+1.20.1` · [Repository](../../) · [Issues](../../issues) · [Wiki](../../wiki)
+**Current version:** `1.4.3+1.20.1` · [Repository](../../) · [Issues](../../issues) · [Wiki](../../wiki) · [**Docs site**](../../pages)
 
 </div>
 
@@ -72,8 +72,47 @@
 - [x] Changelog & dev notes moved to `docs/`
 - [x] AI disclosure (`AI-TRANSPARENCY.md`, README, Modrinth listing)
 - [x] Wiki (install / build / configuration / FAQ)
-- [x] Demo GIFs in `media/`
+- [x] Demo GIFs in `gameplay/` *(moved out of the old `media/` — GIF + MP4 per clip)*
 - [x] GitHub Release `v1.4.2+1.20.1` with the jar attached
+- [x] `AVISO GERAL.txt` — versioning scheme + mod-compatibility warning
+
+</details>
+
+<details>
+<summary><b>🌐 Docs site (GitHub Pages)</b> — click to expand</summary>
+
+Deep-dive site so the README can stay short. Served from `/docs` on `main`.
+
+- [x] `_config.yml` — `baseurl: /nexus-bodycam-mod`, kramdown/GFM, custom layout
+- [x] `_layouts/default.html` — dark HUD theme, sticky nav, footer, skip-link
+- [x] **Custom SVG icon set, no background** (`_includes/icons.html`) — 16 icons,
+      all `stroke="currentColor"` + `fill="none"`, so they inherit colour and never
+      paint a background rectangle
+- [x] **Icons with a function** — each card icon is a button that unfolds a diagram:
+      - 📖 code **family tree** (`dev.bodycam` → 6 packages → 19 classes)
+      - 🔧 temporal architecture flow (`nanoTime` → dt → spring → matrix)
+      - 🫁 breathing cycle curve (3.06 s, asymmetric, sprint exhaustion)
+      - 💿 12-stage post-FX pipeline (world → screen order)
+      - 🌊 water effects table
+      - 🎯 TACZ visual-only contract
+- [x] Live `REC` timecode + blinking dot in the hero camera frame
+- [x] `changelog.md` / `devnotes.md` wrapper pages — render the raw `.md` files
+      in-site via `include_relative`, while the originals stay linkable from the README
+- [x] Copy-to-clipboard on every code block (with `execCommand` fallback)
+- [x] Responsive 4→2→1 breakpoints + `prefers-reduced-motion` support
+- [x] Fixed: broken markdown images inside `<div>` (now real `<img>` tags)
+- [x] Fixed: duplicate `<h1>` (theme default vs. page)
+- [x] Fixed: removed leftover AI text at the end of the old `index.md`
+
+</details>
+
+<details>
+<summary><b>🛠️ Repo maintenance</b> — click to expand</summary>
+
+- [x] **CI** — `.github/workflows/build.yml` builds the jar on push/PR and
+      uploads it as an artifact (Java 17, Gradle cache)
+- [x] **Issue templates** — bug report + feature request (YAML forms)
+- [x] **`CONTRIBUTING.md`** — build steps, changelog rule, PR checklist
 
 </details>
 
@@ -102,19 +141,34 @@ The features below are **implemented but not fully verified in-game**:
 
 - [ ] Keep `docs/CHANGELOG.md` updated on **every** change (task without a changelog entry = task not done)
 - [ ] Keep version in `gradle.properties`, `fabric.mod.json` and README in sync
-- [ ] Consider CI (GitHub Actions) to build the jar automatically
-- [ ] Issue templates / `CONTRIBUTING.md`
+- [x] ~~Consider CI (GitHub Actions) to build the jar automatically~~ — **done**, see `build.yml`
+- [x] ~~Issue templates / `CONTRIBUTING.md`~~ — **done**
 - [ ] Verify the wiki after each release
+- [ ] Keep the docs site in sync with releases (version badge, install steps, feature list)
+- [ ] Publish the built jar on a **release tag** (extend CI with a tag trigger)
 - [ ] ~~Fix rainbow ring (chromatic aberration too strong) in `textures/logo.svg`~~ — **cancelled** at the author's request, keep as-is
 
 ---
 
 ## 💡 Ideas (unscheduled)
 
+**Mod**
+
 - [ ] More presets / community preset sharing (`config/bodycam.json` import)
-- [ ] Bodycam REC overlay (timestamp, battery, blinking dot)
+- [ ] In-game bodycam REC overlay (timestamp, battery, blinking dot)
 - [ ] Optional `libs/` automation (script that fetches the TACZ jar)
 - [ ] Localization pass beyond `en_us` / `pt_br`
+- [ ] Auto-detect `bodycam.json` version drift and migrate settings
+- [ ] Performance preset that trims the post-FX chain for low-end GPUs
+
+**Docs site**
+
+- [ ] Preset gallery — one animated card per preset with a before/after slider
+- [ ] GLSL formula reference page from DEVNOTES §11.2
+- [ ] Search across the changelog
+- [ ] Dark/light theme toggle (currently dark-only, by design)
+- [ ] Mirror the site in `en_us` alongside `pt_br`
+- [ ] OG image generated from the logo for social previews
 
 ---
 
