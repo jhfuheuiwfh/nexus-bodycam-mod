@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ page.title }} · {{ site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+  <meta name="theme-color" content="#0a0f0c">
+  <link rel="icon" type="image/svg+xml" href="{{ '/assets/img/logo.svg' | relative_url }}">
+  <link rel="icon" type="image/png" sizes="256x256" href="{{ '/assets/img/icon.png' | relative_url }}">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page.title }} · {{ site.title }}">
+  <meta property="og:description" content="{{ page.description | default: site.description }}">
+  <meta property="og:url" content="{{ page.url | replace: 'index.html', '' | absolute_url }}">
+  <meta property="og:image" content="{{ '/assets/img/icon.png' | absolute_url }}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+{% include icons.html %}
+
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<header class="topo">
+  <div class="topo__in">
+    <a class="marca" href="{{ '/' | relative_url }}">
+      <img class="marca__logo" src="{{ '/assets/img/logo.svg' | relative_url }}" alt="" width="34" height="34">
+      <span class="marca__txt">
+        <b>NEXUS Bodycam</b>
+        <small>Minecraft 1.20.1 · Fabric</small>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Navegação principal">
+      <a href="{{ '/' | relative_url }}#sistemas">Sistemas</a>
+      <a href="{{ '/' | relative_url }}#arquitetura">Arquitetura</a>
+      <a href="{{ '/' | relative_url }}#pipeline">Pipeline</a>
+      <a href="{{ '/changelog' | relative_url }}">Changelog</a>
+      <a href="{{ '/devnotes' | relative_url }}">Dev&nbsp;notes</a>
+    </nav>
+
+    <div class="topo__acoes">
+      <a class="botao botao--primario" href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/releases/latest" rel="noopener">
+        <svg class="ico" aria-hidden="true"><use href="#ico-baixar"></use></svg>
+        Baixar
+      </a>
+      <a class="botao botao--fantasma" href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod" rel="noopener">
+        <svg class="ico" aria-hidden="true"><use href="#ico-git"></use></svg>
+        Repositório
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="conteudo">
+  {{ content }}
+</main>
+
+<footer class="rodape">
+  <div class="rodape__in">
+    <div class="rodape__col">
+      <img class="marca__logo" src="{{ '/assets/img/logo.svg' | relative_url }}" alt="" width="34" height="34">
+      <p>
+        <b>NEXUS Bodycam</b><br>
+        <span class="fraco">v1.4.3+1.20.1 · GPL-3.0 · client-side</span>
+      </p>
+      <p class="rodape__aviso">
+        <svg class="ico" aria-hidden="true"><use href="#ico-aviso"></use></svg>
+        Este projeto pode conter luzes piscantes.
+      </p>
+    </div>
+
+    <div class="rodape__col">
+      <h3>Documentação</h3>
+      <a href="{{ '/' | relative_url }}">Visão geral</a>
+      <a href="{{ '/' | relative_url }}#arquitetura">Arquitetura</a>
+      <a href="{{ '/changelog' | relative_url }}">Changelog</a>
+      <a href="{{ '/devnotes' | relative_url }}">Dev notes</a>
+    </div>
+
+    <div class="rodape__col">
+      <h3>Projeto</h3>
+      <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/releases/latest" rel="noopener">Downloads</a>
+      <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/issues" rel="noopener">Issues</a>
+      <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/wiki" rel="noopener">Wiki</a>
+      <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/blob/main/AI-TRANSPARENCY.md" rel="noopener">Transparência de IA</a>
+    </div>
+
+    <div class="rodape__col">
+      <h3>Compatível com</h3>
+      <a href="https://modrinth.com/mod/modmenu" rel="noopener">Mod Menu</a>
+      <a href="https://modrinth.com/mod/tacz" rel="noopener">TaCZ</a>
+      <a href="https://modrinth.com/mod/iris" rel="noopener">Iris Shaders</a>
+      <a href="https://fabricmc.net/use/installer/" rel="noopener">Fabric Loader</a>
+    </div>
+  </div>
+
+  <p class="rodape__fim">
+    Projeto independente, não afiliado à Mojang Studios nem à Microsoft.
+    NÃO é afiliado ao Realistic-Grass nem a outros mods cancelados.
+  </p>
+</footer>
+
+<script src="{{ '/assets/js/site.js' | relative_url }}" defer></script>
+</body>
+</html>
