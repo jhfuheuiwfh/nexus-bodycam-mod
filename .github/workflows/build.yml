@@ -20,7 +20,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # `libs/*.jar` holds the third-party TACZ API used ONLY at compile time
+      # (modCompileOnly). It is a third-party mod and must never be committed,
+      # so a clean clone — including this runner — will not have it.
+      #
+      # TaczBridge.java and TaczGunTransformMixin.java import com.tacz.* directly,
+      # so the source does not compile without it. Detect that up front and skip
+      # the jar build instead of failing.
+      - name: Check for the TACZ compile-time jar
+        id: tacz
+        run: |
+          if [ -d libs ] && ls libs/*.jar >/dev/null 2>&1; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Jar build skipped::libs/*.jar is absent (third-party, never committed). TaczBridge imports com.tacz.*, so the jar cannot compile here. Build it locally with the TACZ jar in libs/."
+          fi
+
       - name: Set up JDK 17
+        if: steps.tacz.outputs.present == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -29,25 +47,19 @@ jobs:
       # Cache Gradle deps + wrapper. keyed on the build files so it
       # invalidates automatically when dependencies change.
       - name: Set up Gradle
+        if: steps.tacz.outputs.present == 'true'
         uses: gradle/actions/setup-gradle@v4
 
       # `gradlew` is a shell script; Windows checkouts drop its executable bit,
       # so restore it explicitly before invoking.
       - name: Build
+        if: steps.tacz.outputs.present == 'true'
         run: |
           chmod +x ./gradlew
           ./gradlew build --no-daemon
 
-      # `libs/` holds a third-party TACZ jar that is NOT in the repo, so the
-      # build compiles WITHOUT the TACZ bridge. That path is expected and is
-      # not a failure.
-      - name: Warn if TACZ integration was skipped
-        run: |
-          if [ ! -d libs ] || [ -z "$(ls -A libs 2>/dev/null | grep -v README.md)" ]; then
-            echo "::notice title=TACZ integration::libs/ is empty — the jar builds without TACZ gun realism."
-          fi
-
       - name: Upload artifact
+        if: steps.tacz.outputs.present == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: NEXUS-bodycam-jar
@@ -56,8 +68,9 @@ jobs:
           retention-days: 14
 
       # Only when a version tag is pushed: attach the jar to the GitHub Release.
+      # Same guard — without the TACZ jar there is no artifact to attach.
       - name: Attach jar to release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: steps.tacz.outputs.present == 'true' && startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
           files: build/libs/*.jar
