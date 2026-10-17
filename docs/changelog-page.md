@@ -5,13 +5,13 @@ description: The full development log for NEXUS Bodycam — every session, every
 permalink: /changelog/
 ---
 
-<div class="env" style="padding-top:3rem">
+<div class="env" style="padding-top:3rem" markdown="1">
   <p class="fraco" style="font-size:.84rem;margin-bottom:1.6rem">
     <a href="{{ '/' | relative_url }}">&larr; Documentation</a>
     &middot; Source: <code>docs/CHANGELOG.md</code> in the repository
   </p>
 
-  <div class="doc-md">
-    {% include_relative CHANGELOG.md %}
+  <div class="doc-md" markdown="1">
+{% include_relative CHANGELOG.md %}
   </div>
 </div>

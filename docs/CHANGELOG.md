@@ -1,4 +1,4 @@
-﻿# Changelog - NEXUS Bodycam
+# Changelog - NEXUS Bodycam
 
 > Complete development log: every session, every change, in order.
 > Extracted from the original README so the README can stay short.

@@ -1,4 +1,4 @@
-﻿# NEXUS Bodycam - Development Notes
+# NEXUS Bodycam - Development Notes
 
 > Historical working document (original README). It describes the build
 > environment, the internal design, the status checklist and the effects
