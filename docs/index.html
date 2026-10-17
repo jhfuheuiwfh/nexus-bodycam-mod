@@ -118,7 +118,7 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
                           <li><span class="arq">WaterEffects</span> <span class="obs">— ondas, cáusticas, refração</span></li>
                           <li><span class="pkg">tacz</span> <span class="obs">— realismo visual de armas</span>
                             <ul>
-                              <li><span class="arq">TaczBridge</span> <span class="obs">— ponte + gate de plugin</span></li>
+                              <li><span class="arq">TaczBridge</span> <span class="obs">- ponte por reflection</span></li>
                               <li><span class="arq">TaczGunRealism</span> <span class="obs">— mola da arma (2ª ordem)</span></li>
                               <li><span class="arq">TaczSway</span> <span class="obs">— balanço ao correr / ADS</span></li>
                             </ul>
@@ -373,6 +373,53 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
                 mixins se desabilitam sozinhos via <code>BodycamMixinPlugin</code>.
               </div>
             </div>
+
+            <h4 style="margin:0 0 .5rem">Opcional de verdade</h4>
+            <p style="color:var(--txt-2);font-size:.9rem;margin:0 0 1rem">
+              O TACZ não é uma dependência — é um bônus. O mod <b>compila, instala e
+              roda</b> em uma máquina que nunca viu um jar do TACZ. Duas coisas garantem
+              isso, e as duas são sobre <i>compilação</i>, não sobre runtime:
+            </p>
+
+            <table class="tabela" style="margin-bottom:1rem">
+              <thead><tr><th>Peça</th><th>Sem o jar do TACZ</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><code>TaczBridge</code></td>
+                  <td>Compila. Não tem <b>nenhum</b> <code>import com.tacz.*</code> — resolve a API por <b>reflection</b>.</td>
+                </tr>
+                <tr>
+                  <td><code>TaczGunTransformMixin</code></td>
+                  <td>Fica de fora. Precisa <code>@Mixin</code> numa classe do TACZ, então não há como compilá-lo.</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="aviso" style="margin-bottom:1rem">
+              <svg class="ico" aria-hidden="true"><use href="#ico-git"></use></svg>
+              <div>
+                <b>Nada de terceiro entra no repositório.</b> O jar do TACZ é ignorado pelo
+                git, nenhum código dele é copiado, e nenhuma classe dele é embutida no jar
+                final — o <code>build.gradle</code> só o usa como <code>modCompileOnly</code>.
+              </div>
+            </div>
+
+            <h4 style="margin:0 0 .5rem">Como a reflection funciona</h4>
+            <p style="color:var(--txt-2);font-size:.9rem;margin:0 0 .8rem">
+              Dois detalhes tornam isso barato e à prova de quebra:
+            </p>
+            <ul style="color:var(--txt-2);font-size:.9rem;padding-left:1.1rem;margin:0 0 1rem">
+              <li>O bus de eventos do TACZ <b>é</b> o bus do Fabric
+                (<code>net.fabricmc.fabric.api.event.Event</code>), que já é dependência
+                sua. Só o <i>tipo do listener</i> vira proxy — o registro é uma chamada normal.</li>
+              <li>Tipos do Minecraft <b>nunca são nomeados</b>. O <code>ClientPlayerEntity</code>
+                vivo é passado direto pra chamada reflexiva, então o código não amarra a nenhum
+                mapeamento.</li>
+              <li>A busca é por <b>nome + aridade</b>, não por descritor. Se o TACZ renomear um
+                método, a ponte desliga sozinha com um log — nunca um <code>LinkageError</code>.</li>
+            </ul>
+
+            <h4 style="margin:0 0 .5rem">O que o TACZ adiciona</h4>
             <ul style="color:var(--txt-2);font-size:.9rem;padding-left:1.1rem;margin:0">
               <li><b>Mola da arma</b> de 2ª ordem, com overshoot — o recoil "pesa".</li>
               <li><b>Baixar arma</b> ao correr e ao andar agachado.</li>
@@ -431,7 +478,7 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
           <li><code>CameraMixin</code> — rotação da câmera</li>
           <li><code>GameRendererMixin</code> — fase de render</li>
           <li><code>EntityMixin</code> — passos ↔ áudio</li>
-          <li><code>TaczGunTransformMixin</code> — arma</li>
+          <li><code>TaczGunTransformMixin</code> — arma <span class="fraco" style="font-size:.8em">(só com TACZ)</span></li>
         </ul>
       </div>
     </div>
@@ -511,11 +558,12 @@ description: Documentação profunda do NEXUS Bodycam — arquitetura temporal, 
     <h3 style="margin-bottom:.8rem">Compilar a partir do código</h3>
     <pre><code>git clone https://github.com/jhfuheuiwfh/nexus-bodycam-mod.git
 cd nexus-bodycam-mod
-# coloque o jar do TACZ em libs/ se quiser integração com armas
 ./gradlew build          # Windows: gradlew.bat build</code></pre>
     <p class="fraco" style="font-size:.85rem;margin-top:.8rem">
-      O artefato fica em <code>build/libs/</code>. O <code>libs/</code> é ignorado pelo
-      git porque o jar do TACZ é de terceiros.
+      O artefato fica em <code>build/libs/</code>. <b>Compila sem o TACZ</b> — nesse caso o
+      mixin da arma fica de fora e a ponte fica desligada. Para o pacote completo, coloque o
+      jar do TACZ em <code>libs/</code> antes de buildar. O <code>libs/</code> é ignorado pelo
+      git porque esse jar é de terceiros.
     </p>
   </div>
 </section>
@@ -536,7 +584,7 @@ cd nexus-bodycam-mod
       <tbody>
         <tr><td>Fabric API</td><td><b style="color:var(--acento)">Obrigatório</b></td><td>—</td></tr>
         <tr><td>Mod Menu</td><td>Opcional</td><td>Abre a tela de configuração in-game</td></tr>
-        <tr><td>TaCZ</td><td>Opcional</td><td>Realismo visual de armas (só visual)</td></tr>
+        <tr><td>TaCZ</td><td>Opcional</td><td>Realismo visual de armas (só visual). Ligado por reflection — sem ele o mod segue funcionando</td></tr>
         <tr><td>Iris / Sodium</td><td>Compatível</td><td>Passagens de sombra são puladas</td></tr>
         <tr><td>Shaderpacks bodycam</td><td>Compatível</td><td>Use "Sync with Shader"</td></tr>
         <tr><td>Distant Horizons</td><td>Compatível</td><td>—</td></tr>
