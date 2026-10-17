@@ -18,7 +18,7 @@ Chest-mounted camera, breathing you can hear, lens effects and full weapon reali
 [![Java](https://img.shields.io/badge/Java-17-orange.svg)](https://openjdk.org/)
 [![AI disclosure](https://img.shields.io/badge/AI-disclosed-yellow.svg)](AI-TRANSPARENCY.md)
 
-[Install](#installation) · [Build](#building-from-source) · [Configuration](#configuration) · [Wiki](../../wiki) · [Issues](../../issues) · [AI disclosure](AI-TRANSPARENCY.md)
+[Install](#installation) · [Build](#building-from-source) · [Configuration](#configuration) · [Wiki](../../wiki) · [Issues](../../issues) · [AI disclosure](AI-TRANSPARENCY.md) [Site](https://jhfuheuiwfh.github.io/nexus-bodycam-mod/)
 
 </div>
 
