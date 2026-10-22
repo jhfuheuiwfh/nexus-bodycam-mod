@@ -818,4 +818,16 @@ all fucked up… there's no scroll (bottom parts cut off!)".
 - **Pending**: playtest (feathered border + stronger ring blur + auto-save) and
   the GPU probe line from `logs/latest.log`.
 
+### Privacy / metadata hygiene (2026-10-22)
+- `fabric.mod.json`: `authors` `["Adriano"]` → `["stable-user1223"]` — real
+  name removed from public metadata (Mod Menu displays it in-game).
+- `docs/DEVNOTES.md`: local machine paths sanitized
+  (`C:\Users\Adriano\` → `C:\Users\<user>\`).
+- `.gitignore`: `DOCs.txt` added — internal notes with machine-specific paths
+  must not be tracked.
+- `README.md`: fixed mailto subject typo (`NEXUS-bodyca-mmod` →
+  `NEXUS-bodycam-mod`).
+- Git history: the author email on one older commit was migrated from the
+  personal address to the brand address (history rewritten; tags force-pushed).
+
 ---

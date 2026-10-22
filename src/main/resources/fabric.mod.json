@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "NEXUS Bodycam",
   "description": "Realistic bodycam-style camera with temporal effects, post-processing, DOF and tactical HUD for Minecraft 1.20.1",
-  "authors": ["Adriano"],
+  "authors": ["stable-user1223"],
   "contact": {
     "sources": "https://github.com/jhfuheuiwfh/nexus-bodycam-mod",
     "issues": "https://github.com/jhfuheuiwfh/nexus-bodycam-mod/issues"

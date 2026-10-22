@@ -53,27 +53,27 @@
 
 | Item | Value |
 |---|---|
-| Base project (template) | `C:\Users\Adriano\Downloads\realistic-grass\realistic-grass` |
-| Project (bodycam) | `C:\Users\Adriano\Downloads\bodycam` |
-| README (this one) | `C:\Users\Adriano\Downloads\NEXUS-bodycam-mod\README.md` |
+| Base project (template) | `C:\Users\<user>\Downloads\realistic-grass\realistic-grass` |
+| Project (bodycam) | `C:\Users\<user>\Downloads\bodycam` |
+| README (this one) | `C:\Users\<user>\Downloads\NEXUS-bodycam-mod\README.md` |
 | JDK used | `D:\jdk-21.0.11+10` (JDK 21 — compiles targeting Java 17) |
 | Java on PATH | `1.8.0_471` — **DO NOT USE** |
-| Gradle | no `gradle` on PATH and no wrapper in the project → Gradle 8.5 extracted at `C:\Users\Adriano\AppData\Local\Temp\opencode\gradle-8.5` (`bin\gradle.bat`) |
+| Gradle | no `gradle` on PATH and no wrapper in the project → Gradle 8.5 extracted at `C:\Users\<user>\AppData\Local\Temp\opencode\gradle-8.5` (`bin\gradle.bat`) |
 | git | `D:\Git\cmd\git.exe` (git 2.55.0 on PATH) |
 | Loom | `fabric-loom` 1.5-SNAPSHOT (resolves → 1.5.8) |
-| ffmpeg | `C:\Users\Adriano\AppData\Local\Microsoft\WinGet\Links\ffmpeg.exe` (winget, used for WAV→OGG) |
+| ffmpeg | `C:\Users\<user>\AppData\Local\Microsoft\WinGet\Links\ffmpeg.exe` (winget, used for WAV→OGG) |
 
 ### Build command (PowerShell, run at the project root)
 
 ```powershell
 $env:JAVA_HOME='D:\jdk-21.0.11+10'
-& 'C:\Users\Adriano\AppData\Local\Temp\opencode\gradle-8.5\bin\gradle.bat' clean build --no-daemon --console=plain
+& 'C:\Users\<user>\AppData\Local\Temp\opencode\gradle-8.5\bin\gradle.bat' clean build --no-daemon --console=plain
 ```
 
 Expected output: `build\libs\NEXUS-bodycam-1.4.3+1.20.1.jar`
 
 Installation: copy to
-`C:\Users\Adriano\AppData\Roaming\FreesmLauncher\instances\1.20.1\minecraft\mods\`
+`C:\Users\<user>\AppData\Roaming\FreesmLauncher\instances\1.20.1\minecraft\mods\`
 (replace only the `NEXUS-bodycam-*.jar`; never touch third-party jars)
 and verify with `Get-FileHash -Algorithm SHA256`.
 

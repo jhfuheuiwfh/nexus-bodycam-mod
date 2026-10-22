@@ -205,6 +205,6 @@ Released under the **[GNU General Public License v3.0](LICENSE)**.
 
 Feedback and bug reports welcome:
 
-- **Email:** [stableuser1223@gmail.com](mailto:stableuser1223@gmail.com?subject=NEXUS-bodyca-mmod%20feedback)
+- **Email:** [stableuser1223@gmail.com](mailto:stableuser1223@gmail.com?subject=NEXUS-bodycam-mod%20feedback)
 
 **Links:** [Repository](../../) · [Issue tracker](../../issues) · [Wiki](../../wiki) · [Changelog](docs/CHANGELOG.md) · [Dev notes](docs/DEVNOTES.md)

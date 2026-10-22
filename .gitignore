@@ -64,3 +64,6 @@ ehthumbs.db
 .env.*
 *.keystore
 *.pem
+
+# internal notes (machine paths) — never commit
+DOCs.txt
