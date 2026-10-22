@@ -145,6 +145,9 @@ The features below are **implemented but not fully verified in-game**:
 - [x] ~~Issue templates / `CONTRIBUTING.md`~~ — **done**
 - [ ] Verify the wiki after each release
 - [ ] Keep the docs site in sync with releases (version badge, install steps, feature list)
+- [ ] **Site download rule**: all download buttons/links use `data-download-latest`
+      + the auto-resolver in `site.js` — never hardcode versioned release URLs
+      again; after each release only the static fallback texts are refreshed
 - [ ] Publish the built jar on a **release tag** (extend CI with a tag trigger)
 - [ ] ~~Fix rainbow ring (chromatic aberration too strong) in `textures/logo.svg`~~ — **cancelled** at the author's request, keep as-is
 

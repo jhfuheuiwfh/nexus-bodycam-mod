@@ -125,6 +125,25 @@ When adding an icon, add it to `_includes/icons.html` as a `<symbol>`. Keep the
 convention: **`stroke="currentColor"` + `fill="none"`**, no background rect, no
 hard-coded colour — that is what makes them transparent and theme-aware.
 
+### Release-sync rule — the site must always reflect the newest version
+
+After **every** release, update the site **in the same task** that publishes it:
+
+1. **Download buttons/links** — never hardcode versioned URLs again. All
+   download elements carry `data-download-latest` and resolve to the newest
+   JAR automatically via the GitHub API resolver in `assets/js/site.js`
+   (static fallback: `releases/latest`, which never 404s). If the resolver
+   pattern changes, keep fallbacks safe.
+2. **Version labels** — any visible version text (hero badge `REC · vX`,
+   button labels, install steps) uses `data-version-label`, refreshed by the
+   resolver. Update the static fallback text only as a courtesy.
+3. **Content** — the site is the always-current deep dive: when a feature is
+   added/reworked (or an old behaviour becomes wrong), the site gains/updates
+   its section; anything worth knowing that crowds the README lives here
+   (architecture, presets, GPU notes, compatibility matrix).
+4. Then sync the remaining pointers: README version line, `TODO.md` version,
+   wiki, and update the wiki after each release (see Maintenance in `TODO.md`).
+
 ---
 
 ## 📄 License

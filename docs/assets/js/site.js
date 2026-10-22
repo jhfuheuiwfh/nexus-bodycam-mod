@@ -67,6 +67,40 @@
       }
     });
   });
+  /* ── Latest-release download resolver ───────────────────────────.
+     Every element with [data-download-latest] is a download link that
+     must ALWAYS point to the newest published JAR — never a hardcoded
+     version.
+     - No JS yet (or API down): the href stays `releases/latest`, GitHub's
+       built-in redirect to the newest release page. Never a 404.
+     - JS on: we fetch the latest release from the GitHub API, find the
+       first .jar asset and upgrade every matching link to the direct
+       asset URL. Also refreshes [data-version-label] texts with the
+       release tag, so "Download v..." stays truthful forever.
+     Versioned release pages do not need manual edits anymore: just
+     publish a release and everything on the site follows.             */
+  var GH_RELEASE_API = "https://api.github.com/repos/jhfuheuiwfh/nexus-bodycam-mod/releases/latest";
+  var latestLinks = document.querySelectorAll("[data-download-latest]");
+  if (latestLinks.length) {
+    fetch(GH_RELEASE_API, { headers: { "Accept": "application/vnd.github+json" } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (rel) {
+        if (!rel || !rel.assets) { return; }
+        var jar = null;
+        for (var i = 0; i < rel.assets.length; i++) {
+          if (/\.jar$/i.test(rel.assets[i].name)) { jar = rel.assets[i]; break; }
+        }
+        if (jar && jar.browser_download_url) {
+          latestLinks.forEach(function (a) { a.href = jar.browser_download_url; });
+        }
+        if (rel.tag_name) {
+          document.querySelectorAll("[data-version-label]").forEach(function (el) {
+            el.textContent = rel.tag_name;
+          });
+        }
+      })
+      .catch(function () { /* keep the releases/latest fallback silently */ });
+  }
   /* ── Hero REC timecode ───────────────────────────────────────────
      Purely cosmetic: imitates the counter of a recording camera.
      Stops when the tab is hidden (no wasted CPU). */

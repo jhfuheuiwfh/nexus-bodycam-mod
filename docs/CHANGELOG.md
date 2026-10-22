@@ -818,6 +818,21 @@ all fucked up… there's no scroll (bottom parts cut off!)".
 - **Pending**: playtest (feathered border + stronger ring blur + auto-save) and
   the GPU probe line from `logs/latest.log`.
 
+### Docs site — always-latest downloads (2026-10-22)
+- All download buttons/links (site hero, nav, footer, install paragraph) now
+  carry `data-download-latest` and point at `releases/latest` as static
+  fallback; `assets/js/site.js` gained a resolver that fetches the newest
+  release from the GitHub API and upgrades every link to the direct JAR asset.
+- Visible version texts (hero `REC · …` badge, hero button label, install
+  paragraph version) use `data-version-label` and refresh automatically.
+- `README.md` download line reworded: always-latest, no per-version jar name.
+- `CONTRIBUTING.md`: new **Release-sync rule** — after every release the site
+  must be updated in the same task (resolver covers downloads; content and
+  version fallbacks by hand). `TODO.md`: maintenance item mirrors it.
+- Why: publishing v1.4.4 will not require touching any download URL — the
+  buttons follow the newest release on their own.
+
+---
 ### Privacy / metadata hygiene (2026-10-22)
 - `fabric.mod.json`: `authors` `["Adriano"]` → `["stable-user1223"]` — real
   name removed from public metadata (Mod Menu displays it in-game).
