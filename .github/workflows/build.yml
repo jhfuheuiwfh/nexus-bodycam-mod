@@ -18,7 +18,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # TACZ is an OPTIONAL integration and its jar is third-party, so it is
       # gitignored and never present here. That is fine: TaczBridge resolves the
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Build GitHub Pages
         uses: actions/jekyll-build-pages@v1
