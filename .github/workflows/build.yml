@@ -41,7 +41,7 @@ jobs:
       # Cache Gradle deps + wrapper. keyed on the build files so it
       # invalidates automatically when dependencies change.
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v6
 
       # `gradlew` is a shell script; Windows checkouts drop its executable bit,
       # so restore it explicitly before invoking.
