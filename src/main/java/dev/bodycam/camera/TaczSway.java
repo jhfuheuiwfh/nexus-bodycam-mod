@@ -1,7 +1,7 @@
 package dev.bodycam.camera;
 
 import dev.bodycam.config.BodycamConfig;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 public class TaczSway {
     private static final CameraState state = CameraState.INSTANCE;
@@ -21,7 +21,7 @@ public class TaczSway {
         long now = System.nanoTime();
         double dt = lastNanos == 0 ? 0.0 : (now - lastNanos) / 1.0e9;
         lastNanos = now;
-        return MathHelper.clamp((float) dt, 0.0f, 0.1f);
+        return Mth.clamp((float) dt, 0.0f, 0.1f);
     }
 
     public static void update() {
@@ -47,7 +47,7 @@ public class TaczSway {
             inited = true;
         }
 
-        if (Math.abs(MathHelper.wrapDegrees(targetYaw - yawSpring.pos)) > 100.0) {
+        if (Math.abs(Mth.wrapDegrees(targetYaw - yawSpring.pos)) > 100.0) {
             yawSpring.snap(targetYaw);
         }
         if (Math.abs(targetPitch - pitchSpring.pos) > 100.0) {
@@ -61,7 +61,7 @@ public class TaczSway {
         yawSpring.stepWrapped(dt, omega, zeta, targetYaw);
         pitchSpring.step(dt, omega, zeta, targetPitch);
 
-        double yawOff = MathHelper.wrapDegrees((float) (yawSpring.pos - targetYaw)) * cfg.taczSwayIntensity;
+        double yawOff = Mth.wrapDegrees((float) (yawSpring.pos - targetYaw)) * cfg.taczSwayIntensity;
         double pitchOff = (pitchSpring.pos - targetPitch) * cfg.taczSwayIntensity;
 
         // Phase D — ADS stabilization: aiming tightens the weapon spring
@@ -75,11 +75,11 @@ public class TaczSway {
         // sight wander on its own slow mass (perlin drift, not a static offset)
         double moveTarget = 0.0;
         if (cfg.taczMovePenaltyEnabled && aim > 0.5f) {
-            net.minecraft.client.network.ClientPlayerEntity p =
-                    net.minecraft.client.MinecraftClient.getInstance().player;
+            net.minecraft.client.player.LocalPlayer p =
+                    net.minecraft.client.Minecraft.getInstance().player;
             if (p != null) {
-                double spd = Math.sqrt(p.getVelocity().x * p.getVelocity().x + p.getVelocity().z * p.getVelocity().z);
-                moveTarget = MathHelper.clamp(spd / 0.281, 0.0, 1.0) * 2.5 * aim;
+                double spd = Math.sqrt(p.getDeltaMovement().x * p.getDeltaMovement().x + p.getDeltaMovement().z * p.getDeltaMovement().z);
+                moveTarget = Mth.clamp(spd / 0.281, 0.0, 1.0) * 2.5 * aim;
             }
         }
         moveSpring.step(dt, 2.0 * Math.PI * 2.5, 0.9, moveTarget);
@@ -98,7 +98,7 @@ public class TaczSway {
         if (overshoot <= 0.0005) return 1.0;
         double ln = Math.log(1.0 / overshoot);
         double zeta = ln / Math.sqrt(Math.PI * Math.PI + ln * ln);
-        return MathHelper.clamp((float) zeta, 0.1f, 1.0f);
+        return Mth.clamp((float) zeta, 0.1f, 1.0f);
     }
 
     public static double getYawOffset() { return lastYawOffset; }

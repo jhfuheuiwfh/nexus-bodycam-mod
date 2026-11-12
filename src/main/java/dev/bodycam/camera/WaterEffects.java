@@ -2,16 +2,17 @@ package dev.bodycam.camera;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.bodycam.BodycamClient;
 import dev.bodycam.config.BodycamConfig;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.*;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import org.joml.Matrix4f;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 public class WaterEffects {
     private static final CameraState state = CameraState.INSTANCE;
@@ -27,53 +28,55 @@ public class WaterEffects {
         long now = System.nanoTime();
         double dt = lastNanos == 0 ? 0.0 : (now - lastNanos) / 1.0e9;
         lastNanos = now;
-        dt = MathHelper.clamp((float) dt, 0.0f, 0.1f);
+        dt = Mth.clamp((float) dt, 0.0f, 0.1f);
 
         waveTime += dt * cfg.waveSpeed;
 
-        MinecraftClient mc = MinecraftClient.getInstance();
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
 
-        boolean inWater = mc.player.isSubmergedInWater() || mc.player.isTouchingWater();
+        boolean inWater = mc.player.isUnderWater() || mc.player.isInWater();
         if (inWater && !wasInWater) {
             waterEntryTime = now / 1.0e9;
         }
         wasInWater = inWater;
     }
 
-    public static void render(WorldRenderContext ctx) {
+    /**
+     * Forge equivalent of Fabric's WorldRenderEvents.AFTER_ENTITIES: called
+     * from the RenderLevelStageEvent listener in BodycamClient with the event
+     * pose stack and the current camera position.
+     */
+    public static void render(PoseStack matrices, Vec3 camPos) {
         BodycamConfig cfg = BodycamEffects.getConfig();
         if (!cfg.enabled || !cfg.waterEnabled) return;
 
-        MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.player == null || mc.world == null) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.level == null) return;
 
-        boolean inWater = mc.player.isSubmergedInWater() || mc.player.isTouchingWater();
+        boolean inWater = mc.player.isUnderWater() || mc.player.isInWater();
         if (!inWater) return;
 
-        MatrixStack matrices = ctx.matrixStack();
-        Vec3d camPos = ctx.camera().getPos();
-
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
 
-        matrices.push();
+        matrices.pushPose();
         matrices.translate(-camPos.x, -camPos.y, -camPos.z);
 
         renderUnderwaterFog(matrices, cfg);
         renderCaustics(matrices, cfg, camPos);
         renderWaterSurface(matrices, cfg, camPos);
 
-        matrices.pop();
+        matrices.popPose();
 
         RenderSystem.depthMask(true);
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
     }
 
-    private static void renderUnderwaterFog(MatrixStack matrices, BodycamConfig cfg) {
+    private static void renderUnderwaterFog(PoseStack matrices, BodycamConfig cfg) {
         if (!cfg.underwaterFogEnabled) return;
 
         float fogStart = 0.0f;
@@ -84,16 +87,16 @@ public class WaterEffects {
         RenderSystem.setShaderFogShape(RenderSystem.getShaderFogShape());
     }
 
-    private static void renderCaustics(MatrixStack matrices, BodycamConfig cfg, Vec3d camPos) {
+    private static void renderCaustics(PoseStack matrices, BodycamConfig cfg, Vec3 camPos) {
         if (cfg.causticsStrength <= 0.01) return;
 
         double time = waveTime;
         double strength = cfg.causticsStrength;
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.getBuilder();
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         int radius = 8;
         int px = (int) camPos.x;
@@ -116,28 +119,28 @@ public class WaterEffects {
                     float b = 1.0f;
 
                     float y = py + 0.1f;
-                    buffer.vertex(worldX, y, worldZ).color(r, g, b, alpha).next();
-                    buffer.vertex(worldX + 1, y, worldZ).color(r, g, b, alpha).next();
-                    buffer.vertex(worldX + 1, y, worldZ + 1).color(r, g, b, alpha).next();
-                    buffer.vertex(worldX, y, worldZ + 1).color(r, g, b, alpha).next();
+                    buffer.vertex(worldX, y, worldZ).color(r, g, b, alpha).endVertex();
+                    buffer.vertex(worldX + 1, y, worldZ).color(r, g, b, alpha).endVertex();
+                    buffer.vertex(worldX + 1, y, worldZ + 1).color(r, g, b, alpha).endVertex();
+                    buffer.vertex(worldX, y, worldZ + 1).color(r, g, b, alpha).endVertex();
                 }
             }
         }
 
-        tessellator.draw();
+        tesselator.end();
     }
 
-    private static void renderWaterSurface(MatrixStack matrices, BodycamConfig cfg, Vec3d camPos) {
+    private static void renderWaterSurface(PoseStack matrices, BodycamConfig cfg, Vec3 camPos) {
         if (cfg.waterOpacity <= 0.01) return;
 
         double time = waveTime;
         double height = cfg.waveHeight;
         double freq = cfg.waveFrequency;
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.getBuilder();
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 
         int radius = 12;
         int px = (int) camPos.x;
@@ -174,20 +177,21 @@ public class WaterEffects {
                     fa = Math.min(1.0f, fa + foam * 0.35f);
                 }
 
-                buffer.vertex(worldX, y, worldZ).color(fr, fg, fb, fa).next();
-                buffer.vertex(worldX + 1, y, worldZ).color(fr, fg, fb, fa).next();
-                buffer.vertex(worldX + 1, y, worldZ + 1).color(fr, fg, fb, fa).next();
-                buffer.vertex(worldX, y, worldZ + 1).color(fr, fg, fb, fa).next();
+                buffer.vertex(worldX, y, worldZ).color(fr, fg, fb, fa).endVertex();
+                buffer.vertex(worldX + 1, y, worldZ).color(fr, fg, fb, fa).endVertex();
+                buffer.vertex(worldX + 1, y, worldZ + 1).color(fr, fg, fb, fa).endVertex();
+                buffer.vertex(worldX, y, worldZ + 1).color(fr, fg, fb, fa).endVertex();
             }
         }
 
-        tessellator.draw();
+        tesselator.end();
     }
 
     public static boolean isInWater() {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.player == null) return false;
-        return mc.player.isSubmergedInWater() || mc.player.isTouchingWater();
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null) return false;
+        return player.isUnderWater() || player.isInWater();
     }
 
     public static double getWaveTime() {

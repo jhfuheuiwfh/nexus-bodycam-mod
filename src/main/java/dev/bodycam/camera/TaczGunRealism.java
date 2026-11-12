@@ -1,9 +1,9 @@
 package dev.bodycam.camera;
 
 import dev.bodycam.config.BodycamConfig;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Mth;
 
 public class TaczGunRealism {
     private static final CameraState state = CameraState.INSTANCE;
@@ -22,7 +22,7 @@ public class TaczGunRealism {
         long now = System.nanoTime();
         double dt = lastNanos == 0 ? 0.0 : (now - lastNanos) / 1.0e9;
         lastNanos = now;
-        return MathHelper.clamp((float) dt, 0.0f, 0.1f);
+        return Mth.clamp((float) dt, 0.0f, 0.1f);
     }
 
     public static void update() {
@@ -37,10 +37,10 @@ public class TaczGunRealism {
         }
 
         double dt = frameDelta();
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        double speed = Math.sqrt(player.getVelocity().x * player.getVelocity().x + player.getVelocity().z * player.getVelocity().z);
+        double speed = Math.sqrt(player.getDeltaMovement().x * player.getDeltaMovement().x + player.getDeltaMovement().z * player.getDeltaMovement().z);
         boolean sprinting = player.isSprinting() && speed > 0.2;
 
         if (cfg.taczLoweringEnabled) {

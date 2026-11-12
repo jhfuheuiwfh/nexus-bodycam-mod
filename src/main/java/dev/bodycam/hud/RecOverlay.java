@@ -1,11 +1,8 @@
 package dev.bodycam.hud;
 
-import dev.bodycam.BodycamClient;
 import dev.bodycam.config.BodycamConfig;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,9 +17,12 @@ import java.time.format.DateTimeFormatter;
  *   bottom-centre clock + date
  *   bottom corners device label + real resolution/FPS
  *
- * Hidden while any screen is open, F1 (hudHidden) or when the mod /
+ * Hidden while any screen is open, F1 (hideGui) or when the mod /
  * recOverlayEnabled is off. Every block is independently toggleable from
  * the config screen (HUD & Overlay category).
+ *
+ * On Forge the registration happens in BodycamForge via
+ * RegisterGuiOverlaysEvent (registerAboveAll).
  */
 public final class RecOverlay {
     private static final int MARGIN = 6;
@@ -42,7 +42,6 @@ public final class RecOverlay {
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("HH:mm:ss");
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    private static boolean registered = false;
     private static boolean inWorld = false;
     private static long joinMillis = 0L;
     private static long lastDrain = 0L;
@@ -50,20 +49,13 @@ public final class RecOverlay {
 
     private RecOverlay() {}
 
-    public static void register() {
-        if (registered) return;
-        registered = true;
-        HudRenderCallback.EVENT.register(RecOverlay::render);
-        BodycamClient.LOGGER.info("[bodycam] REC overlay HUD registado.");
-    }
-
-    private static void render(DrawContext context, float tickDelta) {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.world == null || mc.player == null) {
+    public static void renderOverlay(GuiGraphics graphics, float partialTick) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null) {
             inWorld = false;
             return;
         }
-        if (mc.currentScreen != null || mc.options.hudHidden) return;
+        if (mc.screen != null || mc.options.hideGui) return;
 
         BodycamConfig cfg = BodycamConfig.loadCached();
         if (!cfg.enabled || !cfg.recOverlayEnabled) return;
@@ -80,50 +72,45 @@ public final class RecOverlay {
             lastDrain = now;
         }
 
-        MatrixStack ms = context.getMatrices();
-        ms.push();
-
         // ---- top-left: blinking ● REC + elapsed session time ----
         if ((now / BLINK_HALF_MS) % 2L == 0L) {
-            context.fill(MARGIN, MARGIN + 1, MARGIN + 3, MARGIN + 4, COL_RED);
+            graphics.fill(MARGIN, MARGIN + 1, MARGIN + 3, MARGIN + 4, COL_RED);
         }
-        context.drawTextWithShadow(mc.textRenderer, "REC", MARGIN + 6, MARGIN, COL_WHITE);
+        graphics.drawString(mc.font, "REC", MARGIN + 6, MARGIN, COL_WHITE);
         long secs = Math.max(0L, (now - joinMillis) / 1000L);
         String elapsed = String.format("%02d:%02d:%02d", secs / 3600L, (secs / 60L) % 60L, secs % 60L);
-        context.drawTextWithShadow(mc.textRenderer, elapsed, MARGIN, MARGIN + 11, COL_ELAPSED);
+        graphics.drawString(mc.font, elapsed, MARGIN, MARGIN + 11, COL_ELAPSED);
 
         // ---- top-right: battery icon + % ----
         if (cfg.recOverlayBattery) {
             int col = battery > 50 ? COL_BATT_HI : (battery > 20 ? COL_BATT_MID : COL_BATT_LO);
-            int bx = context.getScaledWindowWidth() - MARGIN - 27;
+            int bx = mc.getWindow().getGuiScaledWidth() - MARGIN - 27;
             int by = MARGIN;
-            context.fill(bx + 10, by + 1, bx + 12, by + 5, 0xFF888888); // cap
-            context.fill(bx, by, bx + 10, by + 6, 0xFF111111);          // body
+            graphics.fill(bx + 10, by + 1, bx + 12, by + 5, 0xFF888888); // cap
+            graphics.fill(bx, by, bx + 10, by + 6, 0xFF111111);          // body
             int fw = Math.round(8f * battery / 100f);
-            if (fw > 0) context.fill(bx + 1, by + 1, bx + 1 + fw, by + 5, col);
-            context.drawTextWithShadow(mc.textRenderer, battery + "%", bx + 15, by, COL_ELAPSED);
+            if (fw > 0) graphics.fill(bx + 1, by + 1, bx + 1 + fw, by + 5, col);
+            graphics.drawString(mc.font, battery + "%", bx + 15, by, COL_ELAPSED);
         }
 
         // ---- bottom-centre: clock + date ----
         if (cfg.recOverlayTimestamp) {
             String time = LocalTime.now().format(TIME_FMT);
             String date = LocalDate.now().format(DATE_FMT);
-            int w = context.getScaledWindowWidth();
-            context.drawCenteredTextWithShadow(mc.textRenderer, time, w / 2, context.getScaledWindowHeight() - 24, COL_WHITE);
-            context.drawCenteredTextWithShadow(mc.textRenderer, date, w / 2, context.getScaledWindowHeight() - 14, COL_DATE);
+            int w = mc.getWindow().getGuiScaledWidth();
+            graphics.drawCenteredString(mc.font, time, w / 2, mc.getWindow().getGuiScaledHeight() - 24, COL_WHITE);
+            graphics.drawCenteredString(mc.font, date, w / 2, mc.getWindow().getGuiScaledHeight() - 14, COL_DATE);
         }
 
         // ---- bottom corners: device label + real resolution/FPS ----
         if (cfg.recOverlayInfo) {
-            int w = context.getScaledWindowWidth();
-            int h = context.getScaledWindowHeight();
-            context.drawTextWithShadow(mc.textRenderer, "NEXUS-7 BODYCAM", MARGIN, h - 12, COL_INFO);
-            String res = mc.getWindow().getFramebufferWidth() + "x" + mc.getWindow().getFramebufferHeight()
-                    + " " + mc.getCurrentFps() + "FPS";
-            int rx = w - MARGIN - mc.textRenderer.getWidth(res);
-            context.drawTextWithShadow(mc.textRenderer, res, rx, h - 12, COL_INFO);
+            int w = mc.getWindow().getGuiScaledWidth();
+            int h = mc.getWindow().getGuiScaledHeight();
+            graphics.drawString(mc.font, "NEXUS-7 BODYCAM", MARGIN, h - 12, COL_INFO);
+            String res = mc.getWindow().getWidth() + "x" + mc.getWindow().getHeight()
+                    + " " + mc.getFps() + "FPS";
+            int rx = w - MARGIN - mc.font.width(res);
+            graphics.drawString(mc.font, res, rx, h - 12, COL_INFO);
         }
-
-        ms.pop();
     }
 }

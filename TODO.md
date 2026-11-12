@@ -60,6 +60,10 @@
 - [x] Render corruption fixed (sampler renamed to `ScreenTex`)
 - [x] Logo (SVG → `icon.png 256`), texts in EN, Modrinth description
 - [x] Build pipeline + `gradlew` wrapper + `.gitignore`
+- [x] **v1.5** — REC overlay HUD (`● REC` + elapsed, battery drain, clock/date,
+      device info w/ real resolution+FPS) + keybind toggle (unbound default) +
+      new *HUD & Overlay* config category + preset description line under the
+      preset bar
 
 </details>
 
@@ -122,6 +126,10 @@ Deep-dive site so the README can stay short. Served from `/docs` on `main`.
 
 The features below are **implemented but not fully verified in-game**:
 
+- [ ] **v1.5** — REC overlay: dot blinks ~1 Hz, elapsed timer runs, battery
+      drains ~1 %/3 min and resets on world join; clock/date/info blocks each
+      respect their config toggle; keybind toggle shows the action-bar
+      confirmation; overlay hides while a screen is open and under F1
 - [ ] **v1.4.3** — vignette blur: edges of the frame look out of focus (bodycam feel);
       slider *Post-FX → Vignette Blur* (0 = off … 1 = full), default 0.6
 - [ ] **v1.4.2** — scroll the config screen top→bottom; aim UP and mine: the cracking block must be the one under the crosshair (chest cam ON *and* OFF)
@@ -158,7 +166,8 @@ The features below are **implemented but not fully verified in-game**:
 **Mod**
 
 - [ ] More presets / community preset sharing (`config/bodycam.json` import)
-- [ ] In-game bodycam REC overlay (timestamp, battery, blinking dot)
+- [x] ~~In-game bodycam REC overlay (timestamp, battery, blinking dot)~~ —
+      **done (v1.5)**, see `dev.bodycam.hud.RecOverlay`
 - [ ] Optional `libs/` automation (script that fetches the TACZ jar)
 - [ ] Localization pass beyond `en_us` / `pt_br`
 - [ ] Auto-detect `bodycam.json` version drift and migrate settings

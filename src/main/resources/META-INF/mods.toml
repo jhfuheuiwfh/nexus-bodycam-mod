@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[47,)"
+license="GPL-3.0"
+
+[[mods]]
+modId="bodycam"
+version="${version}"
+displayName="NEXUS Bodycam"
+description='''Realistic bodycam-style camera with temporal effects, post-processing, DOF and tactical HUD for Minecraft 1.20.1.'''
+authors="stable-user1223"
+logoFile="assets/bodycam/icon.png"
+displayTest="IGNORE_ALL_VERSION"
+
+[[dependencies.bodycam]]
+    modId="forge"
+    mandatory=true
+    versionRange="[47,)"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.bodycam]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20.1,1.21)"
+    ordering="NONE"
+    side="CLIENT"

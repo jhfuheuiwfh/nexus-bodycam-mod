@@ -1,7 +1,7 @@
 package dev.bodycam.config;
 
 import com.google.gson.*;
-import net.fabricmc.loader.api.FabricLoader;
+import net.minecraftforge.fml.loading.FMLPaths;
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -114,6 +114,12 @@ public class BodycamConfig {
     public boolean motionBlurEnabled = true;
     public double motionBlurStrength = 0.6;
 
+    // v1.5 — in-game REC device overlay (bodycam HUD, see dev.bodycam.hud.RecOverlay)
+    public boolean recOverlayEnabled = true;
+    public boolean recOverlayTimestamp = true;
+    public boolean recOverlayBattery = true;
+    public boolean recOverlayInfo = true;
+
     public boolean waterEnabled = true;
     public double waveHeight = 0.15;
     public double waveSpeed = 1.0;
@@ -128,7 +134,7 @@ public class BodycamConfig {
     public double underwaterTintG = 0.4;
     public double underwaterTintB = 0.6;
 
-    private static final Path CONFIG_FILE = FabricLoader.getInstance().getConfigDir().resolve("bodycam.json");
+    private static final Path CONFIG_FILE = FMLPaths.CONFIGDIR.get().resolve("bodycam.json");
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static BodycamConfig load() {

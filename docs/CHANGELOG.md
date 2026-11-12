@@ -846,3 +846,25 @@ all fucked up… there's no scroll (bottom parts cut off!)".
   personal address to the brand address (history rewritten; tags force-pushed).
 
 ---
+### REC overlay HUD + config-screen polish (2026-11-11)
+- **New HUD module `dev.bodycam.hud.RecOverlay`** (registered via
+  `HudRenderCallback`): blinking `● REC` + session elapsed timer (top-left),
+  battery icon with slow drain (1 %/3 real minutes, resets on world join,
+  floors at 8 %; colour green/amber/red) top-right, real clock `HH:mm:ss` +
+  date bottom-centre, device label `NEXUS-7 BODYCAM` + **real** framebuffer
+  resolution + real FPS bottom corners. Hidden while any screen is open,
+  F1 (`hudHidden`) or when the mod/overlay is off.
+- **4 new config toggles** — `recOverlayEnabled`, `recOverlayTimestamp`,
+  `recOverlayBattery`, `recOverlayInfo` — in a new **HUD & Overlay** category
+  of the config screen.
+- **New keybinding** `key.bodycam.toggleRec` (category *NEXUS Bodycam*,
+  unbound by default) toggles the overlay in-game with an action-bar
+  confirmation (`REC overlay: ON/OFF`); change is saved to `bodycam.json`.
+- **Config screen**: one-line **preset description** under the preset bar for
+  all 8 presets (localised en/pt); bottom bar height 38 → 54 to fit it.
+- **Lang**: all new strings in `en_us` + `pt_br`; fixed the pt_br
+  motion-sickness warning (`⚠` was English text).
+- **Verified**: `gradlew.bat build --no-daemon` → **BUILD SUCCESSFUL** on both
+  the fabric and the forge trees; `RecOverlay.class` confirmed inside the jar.
+
+---

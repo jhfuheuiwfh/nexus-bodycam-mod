@@ -1,18 +1,18 @@
 buildscript {
     repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenCentral()
-        maven {
-            name = "Fabric"
-            url = "https://maven.fabricmc.net/"
-        }
         gradlePluginPortal()
     }
     dependencies {
-        classpath "net.fabricmc:fabric-loom:1.5-SNAPSHOT"
+        classpath 'net.minecraftforge.gradle:ForgeGradle:6.0.+'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
-apply plugin: 'fabric-loom'
+apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
 
 group = project.maven_group
@@ -20,29 +20,38 @@ version = project.mod_version
 archivesBaseName = project.archives_base_name
 
 repositories {
+    maven { url = 'https://maven.minecraftforge.net' }
     mavenCentral()
-    maven {
-        name = "Fabric"
-        url = "https://maven.fabricmc.net/"
-    }
-    maven {
-        name = "Terraformers"
-        url = "https://maven.terraformersmc.com/"
-    }
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-    modCompileOnly fileTree(dir: 'libs', include: '*.jar')
-    include "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    // TACZ (compile reference only — the names are identical in the Forge TACZ;
+    // the mixin is gated by BodycamMixinPlugin and ships inert without TACZ)
+    compileOnly fileTree(dir: 'libs', include: ['*.jar'])
 }
 
-loom {
-    accessWidenerPath = file("src/main/resources/bodycam.accesswidener")
+minecraft {
+    mappings channel: 'official', version: project.minecraft_version
+
+    // Dev run tasks (runClient) — the mod is loaded straight from sourceSets.main
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+            mods {
+                bodycam {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
+}
+
+mixin {
+    add sourceSets.main, "bodycam.refmap.json"
+    config "bodycam.mixins.json"
 }
 
 // TACZ is an OPTIONAL integration and its jar is third-party, so it is never
@@ -76,16 +85,27 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 jar {
+    finalizedBy 'reobfJar'
     manifest {
         attributes(
-            'Fabric-Mod-Loader': '>=0.15.11',
-            'Fabric-Mod-Environment': 'client'
+            'Specification-Title': 'bodycam',
+            'Specification-Vendor': 'stable-user1223',
+            'Specification-Version': '1',
+            'Implementation-Title': project.name,
+            'Implementation-Version': project.mod_version,
+            'Implementation-Vendor': 'stable-user1223'
         )
     }
 }
 
+// NOTE: META-INF/mods.toml uses the ${version} token, expanded below to the
+// real mod version (do not leave it to FML — ${file.jarVersion} cannot resolve
+// in dev runs, where there is no jar manifest).
 processResources {
-    filesMatching("fabric.mod.json") {
+    // track the version as an input so a build.gradle change re-expands the
+    // token instead of serving a stale UP-TO-DATE output
+    inputs.property "version", project.mod_version
+    filesMatching("META-INF/mods.toml") {
         expand "version": project.mod_version
     }
 }

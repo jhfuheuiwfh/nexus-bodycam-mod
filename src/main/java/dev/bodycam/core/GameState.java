@@ -1,8 +1,8 @@
 package dev.bodycam.core;
 
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Phase: architecture (roadmap §5). One per-frame snapshot every module can
@@ -13,7 +13,7 @@ import net.minecraft.util.math.Vec3d;
 public final class GameState {
     public static final GameState INSTANCE = new GameState();
 
-    public ClientPlayerEntity player;
+    public LocalPlayer player;
     public double dt = 0.0;
     public double speed = 0.0;
     public double speedNorm = 0.0;
@@ -29,20 +29,20 @@ public final class GameState {
     public static final double WALK_SPEED = 0.216;
     public static final double SPRINT_SPEED = 0.281;
 
-    public static void sample(ClientPlayerEntity player, double dt) {
+    public static void sample(LocalPlayer player, double dt) {
         GameState s = INSTANCE;
         s.player = player;
         s.dt = dt;
         s.valid = player != null;
         if (player == null) return;
 
-        Vec3d vel = player.getVelocity();
+        Vec3 vel = player.getDeltaMovement();
         s.speed = Math.sqrt(vel.x * vel.x + vel.z * vel.z);
-        s.speedNorm = MathHelper.clamp(s.speed / SPRINT_SPEED, 0.0, 1.0);
+        s.speedNorm = Mth.clamp(s.speed / SPRINT_SPEED, 0.0, 1.0);
         s.sprinting = player.isSprinting();
-        s.sneaking = player.isSneaking();
-        s.onGround = player.isOnGround();
-        s.lightLevel = MathHelper.clamp(player.getWorld().getLightLevel(player.getBlockPos()), 0, 15);
+        s.sneaking = player.isCrouching();
+        s.onGround = player.onGround();
+        s.lightLevel = Mth.clamp(player.level().getLightEmission(player.blockPosition()), 0, 15);
         s.darkness = Math.pow(1.0 - s.lightLevel / 15.0, 1.4);
     }
 }

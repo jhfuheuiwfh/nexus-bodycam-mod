@@ -1,13 +1,14 @@
 package dev.bodycam.gui;
 
 import dev.bodycam.config.BodycamConfig;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
-import net.minecraft.client.gui.widget.SliderWidget;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +17,7 @@ import java.util.function.Consumer;
 
 public class BodycamConfigScreen extends Screen {
     private static final int TOP_BAR = 44;
-    private static final int BOTTOM_BAR = 38;
+    private static final int BOTTOM_BAR = 54; // taller: preset description line below the preset bar
     private static final int ROW_H = 22;
     private static final int HDR_H = 16;
     private static final int GAP = 6;
@@ -24,6 +25,10 @@ public class BodycamConfigScreen extends Screen {
     private static final int I_SL = 1;
     private static final int I_TG = 2;
     private static final int I_WARN = 3;
+
+    private static final java.util.Set<String> KNOWN_PRESETS = java.util.Set.of(
+            "SUBTLE", "NORMAL", "INTENSE", "EXTREME",
+            "DOCUMENTARY", "HORROR", "TACTICAL", "RAW GOPRO");
 
     private int colW = 150;
     private int panelX = 4;
@@ -58,7 +63,7 @@ public class BodycamConfigScreen extends Screen {
     }
 
     public BodycamConfigScreen(Screen parent) {
-        super(Text.translatable("bodycam.config.title"));
+        super(Component.translatable("bodycam.config.title"));
         this.parent = parent;
         this.config = BodycamConfig.load();
     }
@@ -172,6 +177,11 @@ public class BodycamConfigScreen extends Screen {
         full("syncWithShader");
         full("disableVanillaBobbing");
 
+        hdr("hud");
+        full("recOverlayEnabled");
+        tg("recOverlayTimestamp");     tg("recOverlayBattery");
+        full("recOverlayInfo");
+
         flushRow();
         Item w = new Item(I_WARN, "warn", 0, 0);
         w.y = curY;
@@ -201,16 +211,16 @@ public class BodycamConfigScreen extends Screen {
 
         buildLayout();
 
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("bodycam.config.save"), b -> {
+        this.addRenderableWidget(Button.builder(Component.translatable("bodycam.config.save"), b -> {
             config.save();
-            close();
-        }).dimensions(panelX + panelW - 116, 21, 110, 18).build());
+            onClose();
+        }).bounds(panelX + panelW - 116, 21, 110, 18).build());
 
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("bodycam.config.reset"), b -> {
+        this.addRenderableWidget(Button.builder(Component.translatable("bodycam.config.reset"), b -> {
             config = new BodycamConfig();
             config.applyPreset("NORMAL");
-            clearAndReinit();
-        }).dimensions(panelX + 6, 21, 110, 18).build());
+            rebuildWidgets();
+        }).bounds(panelX + 6, 21, 110, 18).build());
 
         for (Item i : items) {
             if (i.type != I_SL && i.type != I_TG) continue;
@@ -225,21 +235,23 @@ public class BodycamConfigScreen extends Screen {
             }
         }
 
-        this.addDrawableChild(CyclingButtonWidget.<String>builder(v -> Text.literal("Preset: " + v))
-            .values(presets)
-            .initially(config.preset.toUpperCase())
-            .build(lx, this.height - BOTTOM_BAR + 7, fullW, 26, Text.literal("Preset: " + config.preset.toUpperCase()),
+        String current = config.preset == null ? "NORMAL" : config.preset.trim().toUpperCase();
+        if (!presets.contains(current)) current = "NORMAL";
+        this.addRenderableWidget(CycleButton.<String>builder(v -> Component.literal("Preset: " + v))
+            .withValues(presets.toArray(String[]::new))
+            .withInitialValue(current)
+            .create(lx, this.height - BOTTOM_BAR + 7, fullW, 26, Component.literal("Preset: " + current),
                 (btn, val) -> {
                     config.applyPreset(val);
-                    clearAndReinit();
+                    rebuildWidgets();
                 }));
     }
 
     private void addToggleAt(String key, int x, int y, int w) {
-        this.addDrawableChild(ButtonWidget.builder(toggleLabel(key, getToggle(key)), b -> {
+        this.addRenderableWidget(Button.builder(toggleLabel(key, getToggle(key)), b -> {
             setToggle(key, !getToggle(key));
             b.setMessage(toggleLabel(key, getToggle(key)));
-        }).dimensions(x, y, w, ROW_H).build());
+        }).bounds(x, y, w, ROW_H).build());
     }
 
     @Override
@@ -247,11 +259,11 @@ public class BodycamConfigScreen extends Screen {
         int maxScroll = Math.max(0, (int) contentH - (contentBot - contentTop));
         double next = scroll - amount * 16;
         scroll = Math.max(0, Math.min(maxScroll, next));
-        clearAndInit();
+        rebuildWidgets();
         return true;
     }
 
-    private void renderDofBlur(net.minecraft.client.gui.DrawContext context) {
+    private void renderDofBlur(GuiGraphics context) {
         boolean blurred = dev.bodycam.camera.PostEffects.renderBlur(6.0f);
         context.fill(0, 0, this.width, this.height, blurred ? 0x50000000 : 0x90000000);
     }
@@ -259,8 +271,8 @@ public class BodycamConfigScreen extends Screen {
     private void addSliderAt(String key, double min, double max, int x, int y, int w) {
         double cur = getVal(key);
         double norm = (cur - min) / (max - min);
-        this.addDrawableChild(new BodycamSlider(x, y, w, ROW_H,
-            Text.translatable("bodycam.config." + key), norm, min, max,
+        this.addRenderableWidget(new BodycamSlider(x, y, w, ROW_H,
+            Component.translatable("bodycam.config." + key), norm, min, max,
             v -> setVal(key, v)));
     }
 
@@ -399,6 +411,10 @@ public class BodycamConfigScreen extends Screen {
             case "waterEnabled" -> config.waterEnabled;
             case "syncWithShader" -> config.syncWithShader;
             case "disableVanillaBobbing" -> config.disableVanillaBobbing;
+            case "recOverlayEnabled" -> config.recOverlayEnabled;
+            case "recOverlayTimestamp" -> config.recOverlayTimestamp;
+            case "recOverlayBattery" -> config.recOverlayBattery;
+            case "recOverlayInfo" -> config.recOverlayInfo;
             default -> false;
         };
     }
@@ -432,28 +448,32 @@ public class BodycamConfigScreen extends Screen {
             case "waterEnabled" -> config.waterEnabled = v;
             case "syncWithShader" -> config.syncWithShader = v;
             case "disableVanillaBobbing" -> config.disableVanillaBobbing = v;
+            case "recOverlayEnabled" -> config.recOverlayEnabled = v;
+            case "recOverlayTimestamp" -> config.recOverlayTimestamp = v;
+            case "recOverlayBattery" -> config.recOverlayBattery = v;
+            case "recOverlayInfo" -> config.recOverlayInfo = v;
         }
         config.save();  // AUTO SAVE (see setVal)
     }
 
-    private Text toggleLabel(String key, boolean val) {
-        return Text.translatable("bodycam.config." + key)
+    private Component toggleLabel(String key, boolean val) {
+        return Component.translatable("bodycam.config." + key)
             .append(": ")
-            .append(Text.translatable(val ? "options.on" : "options.off"));
+            .append(Component.translatable(val ? "options.on" : "options.off"));
     }
 
     private void clearAndReinit() {
-        this.clearAndInit();
+        this.rebuildWidgets();
     }
 
     @Override
-    public void close() {
+    public void onClose() {
         config.save();  // AUTO SAVE: leaving with ESC keeps whatever was edited
-        this.client.setScreen(this.parent);
+        this.minecraft.setScreen(this.parent);
     }
 
     @Override
-    public void render(net.minecraft.client.gui.DrawContext context, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
         renderDofBlur(context);
 
         context.fill(panelX, 2, panelX + panelW, TOP_BAR - 2, 0xB0141419);
@@ -471,13 +491,13 @@ public class BodycamConfigScreen extends Screen {
             if (sy < contentTop || sy + HDR_H > contentBot) continue;
             if (i.type == I_HDR) {
                 context.fill(lx, sy, lx + 2, sy + 12, 0xFFFFAA00);
-                context.drawTextWithShadow(this.textRenderer,
-                    Text.translatable("bodycam.config.category." + i.key).formatted(Formatting.GOLD),
+                context.drawString(this.font,
+                    Component.translatable("bodycam.config.category." + i.key).withStyle(ChatFormatting.GOLD),
                     lx + 6, sy + 2, 0xFFFFFF);
                 context.fill(lx + 6, sy + 13, lx + fullW, sy + 14, 0x60FFAA00);
             } else if ("EXTREME".equalsIgnoreCase(config.preset)) {
-                context.drawTextWithShadow(this.textRenderer,
-                    Text.translatable("bodycam.config.motionSicknessWarning").formatted(Formatting.RED),
+                context.drawString(this.font,
+                    Component.translatable("bodycam.config.motionSicknessWarning").withStyle(ChatFormatting.RED),
                     lx, sy + 2, 0xFF4444);
             }
         }
@@ -492,15 +512,24 @@ public class BodycamConfigScreen extends Screen {
             context.fill(panelX + panelW - 6, thumbY, panelX + panelW - 3, thumbY + thumbH, 0xC0FFFFFF);
         }
 
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 8, 0xFFFFFF);
+        // v1.5 — one-line description of the active preset (below the preset bar)
+        String p = config.preset == null ? "" : config.preset.trim().toUpperCase();
+        if (KNOWN_PRESETS.contains(p)) {
+            String key = p.toLowerCase().replace(' ', '_');
+            context.drawCenteredString(this.font,
+                Component.translatable("bodycam.config.preset.desc." + key),
+                this.width / 2, this.height - 13, 0xFFAA55);
+        }
+
+        context.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
     }
 
-    private static class BodycamSlider extends SliderWidget {
-        private final Text label;
+    private static class BodycamSlider extends AbstractSliderButton {
+        private final Component label;
         private final double min, max;
         private final Consumer<Double> setter;
 
-        BodycamSlider(int x, int y, int w, int h, Text label, double norm, double min, double max, Consumer<Double> setter) {
+        BodycamSlider(int x, int y, int w, int h, Component label, double norm, double min, double max, Consumer<Double> setter) {
             super(x, y, w, h, label, norm);
             this.label = label;
             this.min = min;
@@ -512,7 +541,7 @@ public class BodycamConfigScreen extends Screen {
         @Override
         protected void updateMessage() {
             double real = min + value * (max - min);
-            setMessage(label.copy().append(": ").append(Text.literal(String.format("%.2f", real))));
+            setMessage(label.copy().append(": ").append(Component.literal(String.format("%.2f", real))));
         }
 
         @Override
@@ -522,7 +551,7 @@ public class BodycamConfigScreen extends Screen {
         }
 
         @Override
-        public void renderButton(net.minecraft.client.gui.DrawContext context, int mouseX, int mouseY, float delta) {
+        public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
             int x = this.getX(), y = this.getY(), w = this.getWidth(), h = this.getHeight();
             boolean hov = this.isHovered();
             context.fill(x, y, x + w, y + h, hov ? 0xD034343E : 0xC022222A);
@@ -532,8 +561,8 @@ public class BodycamConfigScreen extends Screen {
             int fw = (int) (tw * value);
             context.fill(x + 2, y + h - 5, x + 2 + fw, y + h - 3, 0xFFFFAA00);
             context.fill(x + 2, y + h - 5, x + 2 + tw, y + h - 3, 0x30FFFFFF);
-            String s = MinecraftClient.getInstance().textRenderer.trimToWidth(getMessage().getString(), w - 8);
-            context.drawCenteredTextWithShadow(MinecraftClient.getInstance().textRenderer, net.minecraft.text.Text.literal(s),
+            String s = Minecraft.getInstance().font.plainSubstrByWidth(getMessage().getString(), w - 8);
+            context.drawCenteredString(Minecraft.getInstance().font, Component.literal(s),
                 x + w / 2, y + 5, 0xFFFFFF);
         }
     }

@@ -1,32 +1,40 @@
 package dev.bodycam.camera;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.bodycam.BodycamClient;
 import dev.bodycam.compat.IrisCompat;
 import dev.bodycam.config.BodycamConfig;
-import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.Framebuffer;
-import net.minecraft.client.gl.ShaderProgram;
-import net.minecraft.client.gl.WindowFramebuffer;
-import net.minecraft.client.render.*;
-import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.NativeImageBackedTexture;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 
 import java.io.InputStream;
 
+/**
+ * Optics module — the post-processing pass. On Forge the shaders are
+ * registered from the @Mod class (RegisterShadersEvent): the ShaderInstance is
+ * constructed there with the event's resource provider and every (re)load
+ * (resource pack change, F3+T) hands the fresh instance back through the
+ * load callbacks below, so the static refs always track the live program.
+ */
 public class PostEffects {
-    private static ShaderProgram postShader;
-    private static ShaderProgram blurShader;
-    private static boolean registered = false;
+    private static ShaderInstance postShader;
+    private static ShaderInstance blurShader;
 
-    private static Framebuffer scratch;
+    private static RenderTarget scratch;
     private static AbstractTexture dirtTex;
     private static boolean dirtFailed = false;
     private static boolean logged = false;
@@ -69,57 +77,45 @@ public class PostEffects {
         return degraded ? 0.5 : 1.0;
     }
 
-    public static void register() {
-        if (registered) return;
-        registered = true;
-        CoreShaderRegistrationCallback.EVENT.register(ctx -> {
-            try {
-                ctx.register(new Identifier("bodycam", "post"), VertexFormats.POSITION, PostEffects::setShader);
-            } catch (Exception e) {
-                BodycamClient.LOGGER.warn("[bodycam] Falha ao registar core shader post: {}", e.getMessage());
-            }
-            try {
-                ctx.register(new Identifier("bodycam", "dofblur"), VertexFormats.POSITION, PostEffects::setBlurShader);
-            } catch (Exception e) {
-                BodycamClient.LOGGER.warn("[bodycam] Falha ao registar core shader dofblur: {}", e.getMessage());
-            }
-        });
-    }
-
-    private static void setShader(ShaderProgram shader) {
+    /**
+     * Load callback for the "bodycam:post" core shader. Called once at client
+     * init and again on every resource reload — just re-point the static ref.
+     */
+    public static void onLoadShader(ShaderInstance shader) {
         postShader = shader;
         BodycamClient.LOGGER.info("[bodycam] Core shader bodycam:post registado.");
     }
 
-    private static void setBlurShader(ShaderProgram shader) {
+    /** Load callback for the "bodycam:dofblur" core shader (config-screen backdrop). */
+    public static void onLoadBlurShader(ShaderInstance shader) {
         blurShader = shader;
         BodycamClient.LOGGER.info("[bodycam] Core shader bodycam:dofblur registado.");
     }
 
     public static boolean copyScreen() {
-        MinecraftClient mc = MinecraftClient.getInstance();
-        Framebuffer main = mc.getFramebuffer();
-        int width = mc.getWindow().getFramebufferWidth();
-        int height = mc.getWindow().getFramebufferHeight();
+        Minecraft mc = Minecraft.getInstance();
+        RenderTarget main = mc.getMainRenderTarget();
+        int width = mc.getWindow().getWidth();
+        int height = mc.getWindow().getHeight();
         if (width <= 0 || height <= 0) return false;
 
         if (scratch == null) {
-            scratch = new WindowFramebuffer(width, height);
-        } else if (scratch.textureWidth != width || scratch.textureHeight != height) {
+            scratch = new TextureTarget(width, height, true, false);
+        } else if (scratch.width != width || scratch.height != height) {
             scratch.resize(width, height, false);
         }
 
-        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, main.fbo);
-        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, scratch.fbo);
+        GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, main.frameBufferId);
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, scratch.frameBufferId);
         GL30.glBlitFramebuffer(0, 0, width, height, 0, 0, width, height,
             GL11.GL_COLOR_BUFFER_BIT, GL11.GL_NEAREST);
-        main.beginWrite(false);
+        main.bindWrite(false);
         return true;
     }
 
     private static void beginPass() {
         RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.disableCull();
@@ -133,27 +129,24 @@ public class PostEffects {
     }
 
     private static void drawQuad() {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-        buffer.vertex(-1, -1, 0).next();
-        buffer.vertex(1, -1, 0).next();
-        buffer.vertex(1, 1, 0).next();
-        buffer.vertex(-1, 1, 0).next();
-        tessellator.draw();
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder buffer = tesselator.getBuilder();
+        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+        buffer.vertex(-1, -1, 0).endVertex();
+        buffer.vertex(1, -1, 0).endVertex();
+        buffer.vertex(1, 1, 0).endVertex();
+        buffer.vertex(-1, 1, 0).endVertex();
+        tesselator.end();
     }
 
     private static void ensureDirt() {
         if (dirtTex != null || dirtFailed) return;
-        MinecraftClient mc = MinecraftClient.getInstance();
-        Identifier id = new Identifier("bodycam", "textures/dirty_lens.png");
+        Minecraft mc = Minecraft.getInstance();
+        ResourceLocation id = new ResourceLocation("bodycam", "textures/dirty_lens.png");
         try {
-            AbstractTexture t = mc.getTextureManager().getTexture(id);
-            if (t == null) {
-                InputStream in = mc.getResourceManager().getResource(id).orElseThrow().getInputStream();
-                t = new NativeImageBackedTexture(NativeImage.read(in));
-                mc.getTextureManager().registerTexture(id, t);
-            }
+            InputStream in = mc.getResourceManager().getResource(id).get().open();
+            AbstractTexture t = new DynamicTexture(NativeImage.read(in));
+            mc.getTextureManager().register(id, t);
             dirtTex = t;
         } catch (Exception e) {
             dirtFailed = true;
@@ -167,11 +160,11 @@ public class PostEffects {
         if (!cfg.enabled || !cfg.postFXEnabled) return;
         if (IrisCompat.isRenderingShadowPass()) return;
 
-        MinecraftClient mc = MinecraftClient.getInstance();
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
 
-        int width = mc.getWindow().getFramebufferWidth();
-        int height = mc.getWindow().getFramebufferHeight();
+        int width = mc.getWindow().getWidth();
+        int height = mc.getWindow().getHeight();
         if (width <= 0 || height <= 0) return;
 
         if (!copyScreen()) return;
@@ -190,9 +183,9 @@ public class PostEffects {
         beginPass();
         RenderSystem.setShader(() -> postShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        postShader.addSampler("ScreenTex", scratch);
+        postShader.setSampler("ScreenTex", scratch);
         if (dirtTex != null) {
-            postShader.addSampler("DirtyLensTex", dirtTex);
+            postShader.setSampler("DirtyLensTex", dirtTex);
         }
 
         var u = postShader.getUniform("PostFXEnabled");
@@ -268,7 +261,7 @@ public class PostEffects {
         // roadmap 10 — lens profile scales with how wide the FOV is pushed
         u = postShader.getUniform("EdgeProfile");
         if (u != null) {
-            double fovFactor = MathHelper.clamp((cfg.fovWideMult - 1.0) / 0.5, 0.0, 1.0);
+            double fovFactor = Mth.clamp((cfg.fovWideMult - 1.0) / 0.5, 0.0, 1.0);
             u.set(cfg.lensProfileEnabled ? (float) (cfg.lensProfileStrength * fovFactor) : 0f);
         }
 
@@ -279,8 +272,8 @@ public class PostEffects {
                 u.set(0f, 0f);
             } else {
                 CameraState st = CameraState.INSTANCE;
-                double yawN = MathHelper.clamp(st.yawVel / 1200.0, -1.0, 1.0);
-                double pitchN = MathHelper.clamp(st.pitchVel / 1200.0, -1.0, 1.0);
+                double yawN = Mth.clamp(st.yawVel / 1200.0, -1.0, 1.0);
+                double pitchN = Mth.clamp(st.pitchVel / 1200.0, -1.0, 1.0);
                 double mag = Math.hypot(yawN, pitchN);
                 if (mag < 0.02) {
                     u.set(0f, 0f);
@@ -300,13 +293,13 @@ public class PostEffects {
         if (!probeLogged) {
             probeLogged = true;
             try {
-                Framebuffer main = mc.getFramebuffer();
+                RenderTarget main = mc.getMainRenderTarget();
                 int px = (int) (0.105 * width);
                 int py = (int) (0.905 * height);
                 java.nio.ByteBuffer bb = org.lwjgl.BufferUtils.createByteBuffer(4);
-                GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, main.fbo);
+                GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, main.frameBufferId);
                 GL11.glReadPixels(px, py, 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, bb);
-                main.beginWrite(false);
+                main.bindWrite(false);
                 int pr = bb.get(0) & 255, pg = bb.get(1) & 255, pb = bb.get(2) & 255, pa = bb.get(3) & 255;
                 BodycamClient.LOGGER.info(
                     "[bodycam] GPU probe: VignetteBlurAlive={} edgeMaskAlive={} rgba={},{},{},{}",
@@ -316,29 +309,29 @@ public class PostEffects {
             }
         }
 
-        postShader.unbind();
+        postShader.clear();
         endPass();
     }
 
     public static boolean renderBlur(float radius) {
         if (blurShader == null) return false;
-        MinecraftClient mc = MinecraftClient.getInstance();
-        if (mc.world == null && mc.player == null && mc.currentScreen == null) return false;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null && mc.player == null && mc.screen == null) return false;
         if (!copyScreen()) return false;
 
-        int width = mc.getWindow().getFramebufferWidth();
-        int height = mc.getWindow().getFramebufferHeight();
+        int width = mc.getWindow().getWidth();
+        int height = mc.getWindow().getHeight();
 
         beginPass();
         RenderSystem.setShader(() -> blurShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        blurShader.addSampler("ScreenTex", scratch);
+        blurShader.setSampler("ScreenTex", scratch);
         var u = blurShader.getUniform("BlurRadius");
         if (u != null) u.set(radius);
         u = blurShader.getUniform("ScreenSize");
         if (u != null) u.set((float) width, (float) height);
         drawQuad();
-        blurShader.unbind();
+        blurShader.clear();
         endPass();
         return true;
     }

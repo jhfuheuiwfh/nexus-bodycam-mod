@@ -46,7 +46,7 @@ public final class Spring {
         double w2 = omega * omega;
         while (remaining > 1.0e-9) {
             double h = Math.min(remaining, SUBSTEP);
-            double err = wrap ? net.minecraft.util.math.MathHelper.wrapDegrees((float) (target - pos)) : (target - pos);
+            double err = wrap ? net.minecraft.util.Mth.wrapDegrees((float) (target - pos)) : (target - pos);
             vel += (w2 * err - c * vel) * h;
             pos += vel * h;
             remaining -= h;

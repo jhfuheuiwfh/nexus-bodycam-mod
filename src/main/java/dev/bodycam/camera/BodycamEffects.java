@@ -1,13 +1,13 @@
 package dev.bodycam.camera;
 
 import dev.bodycam.config.BodycamConfig;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public class BodycamEffects {
     private static final CameraState state = CameraState.INSTANCE;
@@ -35,7 +35,7 @@ public class BodycamEffects {
         long now = System.nanoTime();
         double dt = lastNanos == 0 ? 0.0 : (now - lastNanos) / 1.0e9;
         lastNanos = now;
-        dt = MathHelper.clamp(dt, 0.0, 0.1);
+        dt = Mth.clamp(dt, 0.0, 0.1);
         lastDt = dt;
         return dt;
     }
@@ -56,11 +56,11 @@ public class BodycamEffects {
     public static void onFootstep(BlockState blockState) {
         if (!config.enabled) return;
         footstepCount++;
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        double speed = Math.sqrt(player.getVelocity().x * player.getVelocity().x + player.getVelocity().z * player.getVelocity().z);
-        double speedNorm = MathHelper.clamp(speed / SPRINT_SPEED, 0.0, 1.0);
+        double speed = Math.sqrt(player.getDeltaMovement().x * player.getDeltaMovement().x + player.getDeltaMovement().z * player.getDeltaMovement().z);
+        double speedNorm = Mth.clamp(speed / SPRINT_SPEED, 0.0, 1.0);
         if (speedNorm < 0.10) return;
 
         double target = 1.0;
@@ -91,16 +91,16 @@ public class BodycamEffects {
 
     private static double surfaceGainFor(BlockState blockState) {
         try {
-            BlockSoundGroup g = blockState.getSoundGroup();
-            if (g == BlockSoundGroup.METAL) return 1.30;
-            if (g == BlockSoundGroup.WOOD || g == BlockSoundGroup.NETHER_WOOD
-                    || g == BlockSoundGroup.CHERRY_WOOD || g == BlockSoundGroup.BAMBOO_WOOD) return 1.15;
-            if (g == BlockSoundGroup.STONE || g == BlockSoundGroup.DEEPSLATE
-                    || g == BlockSoundGroup.GLASS || g == BlockSoundGroup.AMETHYST_BLOCK) return 1.05;
-            if (g == BlockSoundGroup.GRAVEL || g == BlockSoundGroup.SAND
-                    || g == BlockSoundGroup.GRASS || g == BlockSoundGroup.SNOW
-                    || g == BlockSoundGroup.WOOL || g == BlockSoundGroup.MOSS_CARPET
-                    || g == BlockSoundGroup.ROOTED_DIRT || g == BlockSoundGroup.POWDER_SNOW) return 0.75;
+            SoundType g = blockState.getSoundType();
+            if (g == SoundType.METAL) return 1.30;
+            if (g == SoundType.WOOD || g == SoundType.NETHER_WOOD
+                    || g == SoundType.CHERRY_WOOD || g == SoundType.BAMBOO_WOOD) return 1.15;
+            if (g == SoundType.STONE || g == SoundType.DEEPSLATE
+                    || g == SoundType.GLASS || g == SoundType.AMETHYST) return 1.05;
+            if (g == SoundType.GRAVEL || g == SoundType.SAND
+                    || g == SoundType.GRASS || g == SoundType.SNOW
+                    || g == SoundType.WOOL || g == SoundType.MOSS_CARPET
+                    || g == SoundType.ROOTED_DIRT || g == SoundType.POWDER_SNOW) return 0.75;
         } catch (Exception ignored) {}
         return 1.0;
     }
@@ -112,12 +112,12 @@ public class BodycamEffects {
             return;
         }
 
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
 
         double dt = frameDelta();
-        double speed = Math.sqrt(player.getVelocity().x * player.getVelocity().x + player.getVelocity().z * player.getVelocity().z);
-        double speedNorm = MathHelper.clamp(speed / SPRINT_SPEED, 0.0, 1.0);
+        double speed = Math.sqrt(player.getDeltaMovement().x * player.getDeltaMovement().x + player.getDeltaMovement().z * player.getDeltaMovement().z);
+        double speedNorm = Mth.clamp(speed / SPRINT_SPEED, 0.0, 1.0);
 
         updateStepSmoothing(player, dt);
         updateBobbing(speed, speedNorm, dt);
@@ -143,16 +143,16 @@ public class BodycamEffects {
      * brightness-shock envelope. The shader only CONSUMES the value — state
      * updates here once per render frame (shadow passes never call onFrame).
      */
-    private static void updateExposure(ClientPlayerEntity player, double dt) {
+    private static void updateExposure(LocalPlayer player, double dt) {
         if (!config.autoExposureEnabled && !config.flashShockEnabled) {
             state.exposureMult = 1.0;
             state.flashT = 0.0;
-            double l = MathHelper.clamp(player.getWorld().getLightLevel(player.getBlockPos()), 0, 15);
+            double l = Mth.clamp(player.level().getLightEmission(player.blockPosition()), 0, 15);
             state.darkness = Math.pow(1.0 - l / 15.0, 1.4);
             state.lightLevel = l;
             return;
         }
-        double light = MathHelper.clamp(player.getWorld().getLightLevel(player.getBlockPos()), 0, 15);
+        double light = Mth.clamp(player.level().getLightEmission(player.blockPosition()), 0, 15);
 
         double darkness = Math.pow(1.0 - light / 15.0, 1.4);
         state.darkness = darkness;
@@ -166,7 +166,7 @@ public class BodycamEffects {
             state.flashCooldown = Math.max(0.0, state.flashCooldown - dt);
             double jump = light - state.lightLevel;
             if (jump >= 6.0 && state.flashCooldown <= 0.0) {
-                state.flashAmp = MathHelper.clamp(jump / 15.0, 0.3, 1.0) * config.flashShockStrength;
+                state.flashAmp = Mth.clamp(jump / 15.0, 0.3, 1.0) * config.flashShockStrength;
                 state.flashT = FLASH_DUR;
                 state.flashCooldown = 1.0;
             }
@@ -187,7 +187,7 @@ public class BodycamEffects {
             mult += 0.08 * state.criticalAmt * config.criticalStrength
                     * TemporalSmoother.perlin2D(state.microT * 1.7, 4.2);
         }
-        return MathHelper.clamp(mult, 0.5, 2.5);
+        return Mth.clamp(mult, 0.5, 2.5);
     }
 
     // = roadmap 08/09/11/07/12/14 — environment envelope pass =============
@@ -197,7 +197,7 @@ public class BodycamEffects {
      * once per render frame from onFrame (shadow passes only consume
      * uniforms — they never update state).
      */
-    private static void updateEnvironment(ClientPlayerEntity player, double dt) {
+    private static void updateEnvironment(LocalPlayer player, double dt) {
         updateExposure(player, dt);
         updateUnderwater(player, dt);
         updateLens(player, dt);
@@ -207,7 +207,7 @@ public class BodycamEffects {
     }
 
     /** Roadmap 11 — underwater blend: fast onset (lambda 6), slow release (1.5). */
-    private static void updateUnderwater(ClientPlayerEntity player, double dt) {
+    private static void updateUnderwater(LocalPlayer player, double dt) {
         boolean inWater = WaterEffects.isInWater() && config.waterEnabled;
         double target = inWater ? 1.0 : 0.0;
         double lambda = target > state.underwaterT ? 6.0 : 1.5;
@@ -224,7 +224,7 @@ public class BodycamEffects {
      * condensation snaps on a bright light shock, smudge builds on impacts.
      * lensCleanSpeed 0 = persistent (real bodycams are never cleaned).
      */
-    private static void updateLens(ClientPlayerEntity player, double dt) {
+    private static void updateLens(LocalPlayer player, double dt) {
         if (!config.lensContaminationEnabled) {
             state.lensDrops = state.lensCond = state.lensSmudge = 0.0;
             state.condCd = Math.max(0.0, state.condCd - dt);
@@ -234,7 +234,7 @@ public class BodycamEffects {
 
         if (state.underwaterT > 0.5) {
             state.lensDrops = 1.0;
-        } else if (player.getWorld().isRaining() && state.lightLevel >= 9.0) {
+        } else if (player.level().isRaining() && state.lightLevel >= 9.0) {
             state.lensDrops = Math.min(1.0, state.lensDrops + dt * 0.35);
         }
 
@@ -262,23 +262,23 @@ public class BodycamEffects {
      * exactly along the view vector. Attack is slow (2.5), release slow-ish
      * (0.8) so the ghost blooms and fades like real glass reflections.
      */
-    private static void updateGhost(ClientPlayerEntity player, double dt) {
+    private static void updateGhost(LocalPlayer player, double dt) {
         double target = 0.0;
         if (config.ghostFlareEnabled) {
-            long ticks = player.getWorld().getTimeOfDay();
+            long ticks = player.level().getDayTime();
             double tod = (((ticks % 24000L) + 24000L) % 24000L) / 24000.0;
             double dayAmt = tod <= 0.5 ? Math.sin(Math.PI * (tod / 0.5)) : 0.0;
             if (dayAmt > 0.01 && state.lightLevel >= 12.0) {
                 double a = Math.PI * (tod / 0.5);
-                Vec3d sun = new Vec3d(Math.cos(a), Math.sin(a), Math.sin(a)).normalize();
+                Vec3 sun = new Vec3(Math.cos(a), Math.sin(a), Math.sin(a)).normalize();
                 double yr = Math.toRadians(state.finalViewYaw);
                 double pr = Math.toRadians(state.finalViewPitch);
-                Vec3d look = new Vec3d(
+                Vec3 look = new Vec3(
                         -Math.sin(yr) * Math.cos(pr),
                         -Math.sin(pr),
                         Math.cos(yr) * Math.cos(pr));
-                double d = look.dotProduct(sun);
-                double t = MathHelper.clamp((d - 0.94) / (0.996 - 0.94), 0.0, 1.0);
+                double d = look.dot(sun);
+                double t = Mth.clamp((d - 0.94) / (0.996 - 0.94), 0.0, 1.0);
                 target = t * t * (3.0 - 2.0 * t) * dayAmt * config.ghostFlareStrength;
             }
         }
@@ -287,7 +287,7 @@ public class BodycamEffects {
     }
 
     /** Roadmap 12 — dust motes only read inside a shaft of light (window 1..8). */
-    private static void updateDust(ClientPlayerEntity player, double dt) {
+    private static void updateDust(LocalPlayer player, double dt) {
         double target = 0.0;
         if (config.dustEnabled && state.lightLevel >= 0.0) {
             double l = state.lightLevel;
@@ -298,7 +298,7 @@ public class BodycamEffects {
     }
 
     /** Roadmap 14 — critical damage: fast onset (3.0), slow settle (0.35). */
-    private static void updateCritical(ClientPlayerEntity player, double dt) {
+    private static void updateCritical(LocalPlayer player, double dt) {
         double frac = player.getMaxHealth() > 0.0f ? player.getHealth() / player.getMaxHealth() : 1.0;
         double target = config.criticalCamEnabled && frac <= 0.25 ? 1.0 : 0.0;
         double lambda = target > state.criticalAmt ? 3.0 : 0.35;
@@ -306,7 +306,7 @@ public class BodycamEffects {
     }
 
     private static double smoothstep(double a, double b, double x) {
-        double t = MathHelper.clamp((x - a) / (b - a), 0.0, 1.0);
+        double t = Mth.clamp((x - a) / (b - a), 0.0, 1.0);
         return t * t * (3.0 - 2.0 * t);
     }
 
@@ -330,8 +330,8 @@ public class BodycamEffects {
     public static double getCriticalAmt() { return state.criticalAmt; }
     public static double getUnderwaterT() { return state.underwaterT; }
 
-    private static void updateStepSmoothing(ClientPlayerEntity player, double dt) {
-        boolean onGround = player.isOnGround();
+    private static void updateStepSmoothing(LocalPlayer player, double dt) {
+        boolean onGround = player.onGround();
         state.impactCd = Math.max(0.0, state.impactCd - dt);
         if (!onGround) {
             state.airborneMaxFall = Math.max(state.airborneMaxFall, player.fallDistance);
@@ -350,7 +350,7 @@ public class BodycamEffects {
         // threshold while pushing, so a held-against-wall contact never re-fires)
         if (config.impactRecoveryEnabled && player.horizontalCollision
                 && state.impactCd <= 0.0 && state.prevSpeed > 0.06) {
-            double s = MathHelper.clamp(state.prevSpeed / 0.25, 0.2, 1.0) * config.impactStrength;
+            double s = Mth.clamp(state.prevSpeed / 0.25, 0.2, 1.0) * config.impactStrength;
             state.landPitchSpring.impulse(s * 22.0);
             state.landRollSpring.impulse(s * 8.0 * state.impactSide);
             state.stepSpring.impulse(-s * 0.4);
@@ -379,7 +379,7 @@ public class BodycamEffects {
 
     private static final double DAMAGE_SHAKE_DUR = 0.4;
 
-    private static void updateDamage(ClientPlayerEntity player, double dt) {
+    private static void updateDamage(LocalPlayer player, double dt) {
         float hp = player.getHealth();
         if (state.prevHealth < 0.0f) {
             state.prevHealth = hp;
@@ -387,13 +387,13 @@ public class BodycamEffects {
         }
         if (hp < state.prevHealth - 0.05f) {
             float dmg = state.prevHealth - hp;
-            state.damageAmp = MathHelper.clamp(dmg * 0.14f, 0.25f, 1.4f) * config.swayIntensity;
+            state.damageAmp = Mth.clamp(dmg * 0.14f, 0.25f, 1.4f) * config.swayIntensity;
             state.damageShakeT = DAMAGE_SHAKE_DUR;
             // roadmap 03 — combat impact: compress + tilt into the hit, own
             // envelope (short cooldown so a rapid-fire burst fires once,
             // while the per-damage noise shake keeps running)
             if (config.impactRecoveryEnabled && state.impactCd <= 0.0) {
-                double s = MathHelper.clamp(dmg * 0.1, 0.2, 1.0) * config.impactStrength;
+                double s = Mth.clamp(dmg * 0.1, 0.2, 1.0) * config.impactStrength;
                 state.landPitchSpring.impulse(s * 18.0);
                 state.landRollSpring.impulse(s * 7.0 * state.impactSide);
                 state.stepSpring.impulse(-s * 0.45);
@@ -416,18 +416,18 @@ public class BodycamEffects {
     }
 
     private static void updateBobbing(double speed, double speedNorm, double dt) {
-        ClientPlayerEntity p = MinecraftClient.getInstance().player;
+        LocalPlayer p = Minecraft.getInstance().player;
         boolean sprinting = p != null && p.isSprinting();
-        boolean sneaking = p != null && p.isSneaking();
+        boolean sneaking = p != null && p.isCrouching();
 
         // roadmap 04 — acceleration drives cadence irregularity + deceleration settle
         double rawAccel = dt > 1.0e-4 ? (speed - state.prevSpeed) / dt : 0.0;
         state.prevSpeed = speed;
-        state.speedAccel = TemporalSmoother.expSmooth(state.speedAccel, MathHelper.clamp(rawAccel, -4.0, 4.0), 10.0, dt);
-        double decel = config.gaitTransitionEnabled ? MathHelper.clamp(-state.speedAccel / 0.8, 0.0, 1.0) : 0.0;
+        state.speedAccel = TemporalSmoother.expSmooth(state.speedAccel, Mth.clamp(rawAccel, -4.0, 4.0), 10.0, dt);
+        double decel = config.gaitTransitionEnabled ? Mth.clamp(-state.speedAccel / 0.8, 0.0, 1.0) : 0.0;
         state.settleGate = TemporalSmoother.expSmooth(state.settleGate, 1.0 - 0.30 * decel, 6.0, dt);
 
-        state.airGate = TemporalSmoother.expSmooth(state.airGate, p != null && p.isOnGround() ? 1.0 : 0.0, 8.0, dt);
+        state.airGate = TemporalSmoother.expSmooth(state.airGate, p != null && p.onGround() ? 1.0 : 0.0, 8.0, dt);
 
         double mult = 1.0;
         if (sprinting) mult *= config.sprintMultiplier;
@@ -442,11 +442,11 @@ public class BodycamEffects {
         } else {
             double period = WALK_PERIOD;
             if (speed > WALK_SPEED) {
-                double t = MathHelper.clamp((speed - WALK_SPEED) / (SPRINT_SPEED - WALK_SPEED), 0.0, 1.0);
+                double t = Mth.clamp((speed - WALK_SPEED) / (SPRINT_SPEED - WALK_SPEED), 0.0, 1.0);
                 period = WALK_PERIOD + (SPRINT_PERIOD - WALK_PERIOD) * t;
             } else if (config.gaitTransitionEnabled && speed > 0.02) {
                 // slow cadence blends toward the sneak cycle instead of staying at walk
-                double t = MathHelper.clamp(speed / WALK_SPEED, 0.0, 1.0);
+                double t = Mth.clamp(speed / WALK_SPEED, 0.0, 1.0);
                 period = SNEAK_PERIOD + (WALK_PERIOD - SNEAK_PERIOD) * t;
             }
             rate = (Math.PI * 2.0 / period) * config.bobbingFrequency;
@@ -506,7 +506,7 @@ public class BodycamEffects {
     // = duracao do breath-in-out.ogg (sync perfeito: o exalar comeca exatamente a meio do ciclo)
     private static final double BREATH_CYCLE = 3.06;
 
-    private static void updateBreath(ClientPlayerEntity player, double dt, double speed) {
+    private static void updateBreath(LocalPlayer player, double dt, double speed) {
         // continuous timer while running (5s -> +35% breath speed, 20s -> +65%; resets when stopping)
         boolean running = player.isSprinting() || speed >= SPRINT_SPEED * 0.85;
         state.runTime = running ? state.runTime + dt : 0.0;
@@ -537,9 +537,9 @@ public class BodycamEffects {
         state.breathPitch = (shape - 0.35) * basePitch * state.breathGate * irregular;
         state.breathY = (shape - 0.35) * (0.03 + 0.02 * state.exhaustion) * state.breathGate * irregular;
 
-        if (cycled && state.breathGate > 0.25 && BreathSound.EVENT != null) {
+        if (cycled && state.breathGate > 0.25 && BreathSound.BREATH.isPresent()) {
             float vol = (float) ((0.5 + 0.5 * state.exhaustion) * state.breathGate * 1.05);
-            player.playSound(BreathSound.EVENT, vol, (float) mult);
+            player.playSound(BreathSound.BREATH.get(), vol, (float) mult);
         }
     }
 
@@ -550,22 +550,22 @@ public class BodycamEffects {
         state.bobPitch = TemporalSmoother.perlin2D(0, state.idleNoiseT * 1.3) * shake * 2.0;
     }
 
-    private static void updateRoll(ClientPlayerEntity player, double dt) {
-        float yawDiff = MathHelper.subtractAngles(player.getYaw(), state.lastYaw);
-        state.lastYaw = player.getYaw();
-        state.lastPitch = player.getPitch();
+    private static void updateRoll(LocalPlayer player, double dt) {
+        float yawDiff = Mth.degreesDifference(player.getYRot(), state.lastYaw);
+        state.lastYaw = player.getYRot();
+        state.lastPitch = player.getXRot();
 
-        double yawRad = Math.toRadians(player.getYaw());
+        double yawRad = Math.toRadians(player.getYRot());
         double fwdX = -Math.sin(yawRad), fwdZ = Math.cos(yawRad);
         double rightX = fwdZ, rightZ = -fwdX;
-        double lateral = player.getVelocity().x * rightX + player.getVelocity().z * rightZ;
+        double lateral = player.getDeltaMovement().x * rightX + player.getDeltaMovement().z * rightZ;
 
         double targetRoll = -yawDiff * 1.0 * config.rollLean
-                + MathHelper.clamp(lateral * 5.0, -2.5, 2.5) * config.swayIntensity;
-        targetRoll = MathHelper.clamp(targetRoll, -10.0, 10.0);
+                + Mth.clamp(lateral * 5.0, -2.5, 2.5) * config.swayIntensity;
+        targetRoll = Mth.clamp(targetRoll, -10.0, 10.0);
         state.rollSmooth = TemporalSmoother.expSmooth(state.rollSmooth, targetRoll, 12.0, dt);
 
-        double lagTarget = MathHelper.clamp(-yawDiff * 0.45, -5.0, 5.0);
+        double lagTarget = Mth.clamp(-yawDiff * 0.45, -5.0, 5.0);
         state.yawLag = TemporalSmoother.expSmooth(state.yawLag, lagTarget, 12.0, dt);
     }
 

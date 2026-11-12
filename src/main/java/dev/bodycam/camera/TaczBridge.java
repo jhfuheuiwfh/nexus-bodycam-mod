@@ -2,11 +2,10 @@ package dev.bodycam.camera;
 
 import dev.bodycam.BodycamClient;
 import dev.bodycam.config.BodycamConfig;
-import net.fabricmc.fabric.api.event.Event;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.phys.HitResult;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,16 +16,16 @@ import java.lang.reflect.Proxy;
  * Phase D — the TACZ bridge. TACZ is an OPTIONAL integration: the mod must
  * compile, load and run on a machine that has never seen a TACZ jar.
  *
- * So this class holds NO compile-time dependency on com.tacz/cn.sh1rocu.
+ * So this class holds NO compile-time dependency on com.tacz.
  * Every TACZ symbol is resolved reflectively in {@link #init()}, which is only
- * reached after BodycamClient has confirmed FabricLoader.isModLoaded("tacz").
+ * reached after BodycamClient has confirmed ModList.isModLoaded("tacz").
  * If any lookup fails the bridge simply stays off and the camera behaves as if
  * TACZ were not installed.
  *
  * Two details make this cheap and safe:
- *   - TACZ's event bus IS the Fabric event bus (net.fabricmc.fabric.api.event.Event),
- *     which is already a compile dependency, so only the listener type is proxied.
- *   - Minecraft types are never named: the live ClientPlayerEntity is handed to
+ *   - The TACZ event callback field is resolved reflectively and the listener
+ *     type is proxied, so no TACZ class is ever named at compile time.
+ *   - Minecraft types are never named: the live LocalPlayer is handed to
  *     reflective calls, so the code is mapping-agnostic.
  *
  * Separation of masses (roadmap rule): real shots drive the WEAPON recoil
@@ -53,7 +52,7 @@ public final class TaczBridge {
         try {
             Class<?> shootEvent  = Class.forName("com.tacz.guns.api.event.common.GunShootEvent");
             Class<?> reloadEvent = Class.forName("com.tacz.guns.api.event.common.GunReloadEvent");
-            Class<?> logicalSide = Class.forName("cn.sh1rocu.tacz.api.LogicalSide");
+            Class<?> logicalSide = tryLogicalSide();
             Class<?> gunOperator = Class.forName("com.tacz.guns.api.client.gameplay.IClientPlayerGunOperator");
 
             logicalSideClient = logicalSide.getField("CLIENT").get(null);
@@ -75,13 +74,15 @@ public final class TaczBridge {
         }
     }
 
-    /** Subscribes a proxy implementing TACZ's `XxxEvent$Callback#post(event)`. */
+    /**
+     * Subscribes a proxy implementing TACZ's `XxxEvent$Callback#post(event)`.
+     * On the Forge TACZ distribution this lookup can fail (different event
+     * plumbing); the thrown Throwable is caught by init() and the bridge
+     * stays off instead of breaking the game.
+     */
     private static void onCallback(Class<?> eventClass, java.util.function.Consumer<Object> handler) throws Exception {
         Field field = eventClass.getField("CALLBACK");
         Object bus = field.get(null);
-        if (!(bus instanceof Event)) {
-            throw new IllegalStateException(eventClass.getName() + ".CALLBACK nao e uma Fabric Event");
-        }
         Class<?> listener = Class.forName(eventClass.getName() + "$Callback");
         Object proxy = Proxy.newProxyInstance(listener.getClassLoader(), new Class<?>[] { listener },
                 (p, method, args) -> {
@@ -90,8 +91,8 @@ public final class TaczBridge {
                     }
                     return null;
                 });
-        // Fabric's Event#register — resolved by name so a signature change is a
-        // caught Throwable here rather than a compile error.
+        // Event#register — resolved by name so a signature change is a caught
+        // Throwable here rather than a compile error.
         Method register = null;
         for (Method m : bus.getClass().getMethods()) {
             if ("register".equals(m.getName()) && m.getParameterCount() == 1) { register = m; break; }
@@ -103,7 +104,7 @@ public final class TaczBridge {
     private static void onShoot(Object event) {
         try {
             if (getLogicalSide.invoke(event) != logicalSideClient) return;
-            MinecraftClient mc = MinecraftClient.getInstance();
+            Minecraft mc = Minecraft.getInstance();
             if (mc.player == null || getShooter.invoke(event) != mc.player) return;
             TaczGunRealism.triggerRecoil(0.5, 0.08);
         } catch (Throwable ignored) {}
@@ -112,7 +113,7 @@ public final class TaczBridge {
     private static void onReload(Object event) {
         try {
             if (getLogicalSide.invoke(event) != logicalSideClient) return;
-            MinecraftClient mc = MinecraftClient.getInstance();
+            Minecraft mc = Minecraft.getInstance();
             if (mc.player == null || getEntity.invoke(event) != mc.player) return;
             TaczGunRealism.triggerReload();
         } catch (Throwable ignored) {}
@@ -121,7 +122,7 @@ public final class TaczBridge {
     /** Sampled once per render frame (main camera only — see TaczSway.update). */
     public static void tickFrame() {
         if (!inited) return;
-        ClientPlayerEntity player = MinecraftClient.getInstance().player;
+        LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             aimAmount = 0.0f;
             return;
@@ -129,7 +130,7 @@ public final class TaczBridge {
         try {
             Object operator = fromLocalPlayer.invoke(null, player);
             Object progress = aimingProgress.invoke(operator, 1.0f);
-            aimAmount = MathHelper.clamp(progress == null ? 0.0f : (Float) progress, 0.0f, 1.0f);
+            aimAmount = Mth.clamp(progress == null ? 0.0f : (Float) progress, 0.0f, 1.0f);
         } catch (Throwable t) {
             aimAmount = 0.0f;
         }
@@ -146,7 +147,7 @@ public final class TaczBridge {
     }
 
     /** Wall pullback probe — called once per frame from TaczGunRealism. */
-    public static void updateWallPull(ClientPlayerEntity player, double dt) {
+    public static void updateWallPull(LocalPlayer player, double dt) {
         if (!inited) {
             wallPull = 0.0;
             return;
@@ -155,15 +156,26 @@ public final class TaczBridge {
         double target = 0.0;
         if (cfg.taczWallPullbackEnabled && cfg.enabled) {
             try {
-                HitResult hit = player.raycast(1.0, 1.0f, false);
+                HitResult hit = player.pick(1.0, 1.0f, false);
                 if (hit.getType() == HitResult.Type.BLOCK) {
-                    double dist = hit.getPos().distanceTo(player.getEyePos());
-                    target = MathHelper.clamp(1.0 - dist, 0.0, 1.0);
+                    double dist = hit.getLocation().distanceTo(player.getEyePosition());
+                    target = Mth.clamp(1.0 - dist, 0.0, 1.0);
                 }
             } catch (Throwable ignored) {}
         }
         double lambda = target > wallPull ? 14.0 : 7.0;
         wallPull = TemporalSmoother.expSmooth(wallPull, target, lambda, dt);
+    }
+
+    /* Fabric-port TACZ keeps LogicalSide under cn.sh1rocu.tacz; the official
+       Forge TACZ ships its own. Try both — any failure still lands in the
+       catch block of init() and the bridge stays off. */
+    private static Class<?> tryLogicalSide() throws ClassNotFoundException {
+        try {
+            return Class.forName("cn.sh1rocu.tacz.api.LogicalSide");
+        } catch (ClassNotFoundException e) {
+            return Class.forName("com.tacz.guns.api.LogicalSide");
+        }
     }
 
     /* ── reflective lookups ────────────────────────────────────────────
