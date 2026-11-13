@@ -4,6 +4,7 @@
   "package": "dev.bodycam.mixin",
   "compatibilityLevel": "JAVA_17",
   "plugin": "dev.bodycam.mixin.BodycamMixinPlugin",
+  "refmap": "bodycam.refmap.json",
   "mixins": [],
   "client": [
     "CameraMixin",
