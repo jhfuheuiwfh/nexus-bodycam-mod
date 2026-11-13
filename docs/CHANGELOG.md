@@ -880,3 +880,30 @@ all fucked up… there's no scroll (bottom parts cut off!)".
   the fabric and the forge trees; `RecOverlay.class` confirmed inside the jar.
 
 ---
+### v1.5.1+1.20.1-forge — production mixin crash fix (2026-11-13)
+- **Fix**: `bodycam.mixins.json` did not declare `"refmap": "bodycam.refmap.json"`.
+  On production installs the Forge 1.20.1 runtime runs with SRG names
+  (`m_7355_`…), and without the declaration the runtime never loaded the
+  refmap, so `EntityMixin` searched the literal mojmap name `playStepSound`
+  and crashed with `InvalidInjectionException` (fatal, mod would not start).
+  Dev runs never hit this because the dev runtime is already mojmap-named.
+- **Verified in the jar**: refmap declared in the config and covering every
+  vanilla mixin target — `playStepSound→m_7355_`, `aiStep→m_8107_`,
+  `getViewVector(F)→m_20252_`, `setup→m_90575_`, `renderLevel→m_109089_`,
+  `bobView→m_109138_`, `getFov→m_109141_`. The roll `@At` target
+  `setInverseViewRotationMatrix` needs no refmap entry: confirmed in
+  `createMcpToSrg/output.tsrg` that it is not obfuscated (identity SRG name).
+- `require = 1` kept (no error hiding).
+- The TACZ gate behaviour is unchanged: the Fabric `TACZ-Refabricated` jar
+  never loads on Forge (it ships `fabric.mod.json`), so "[bodycam] TACZ not
+  detected" is correct there; official Forge TACZ (modid `tacz`) enables
+  the weapon hooks and the bridge.
+- **Published**: release `v1.5.1+1.20.1-forge` (the `v1.5.0+1.20.1-forge`
+  release asset was a broken build and is superseded — banner added, asset
+  removed; the Fabric `v1.5.0` / `v1.4.x` releases are untouched).
+- **Verified**: `gradlew.bat build --no-daemon` → **BUILD SUCCESSFUL**;
+  jar contains `META-INF/mods.toml` (version `1.5.1+1.20.1-forge`),
+  `bodycam.mixins.json` (with refmap), `bodycam.refmap.json`,
+  `pack.mcmeta`; no `fabric.mod.json`.
+
+---
