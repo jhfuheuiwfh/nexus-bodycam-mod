@@ -846,6 +846,18 @@ all fucked up… there's no scroll (bottom parts cut off!)".
   personal address to the brand address (history rewritten; tags force-pushed).
 
 ---
+### Docs site — Fabric/Forge download popup (2026-11-13)
+- Every download button/link (header, hero, footer and install paragraph) now
+  opens a shared popup instead of downloading a single release.
+- The popup offers direct `.jar` downloads for the newest Fabric and Forge
+  releases, in that order, with loader requirements and the shared version.
+- `assets/js/site.js` now resolves the latest published release per loader
+  (not just the newest overall release) and upgrades both popup links;
+  static v1.5.0 URLs remain as the no-JS/API fallback.
+- Added an accessible native `<dialog>` with Escape/backdrop/close support,
+  a CSS `:target` fallback and mobile styling. Site copy/version labels
+  refreshed for Fabric & Forge.
+
 ### REC overlay HUD + config-screen polish (2026-11-11)
 - **New HUD module `dev.bodycam.hud.RecOverlay`** (registered via
   `HudRenderCallback`): blinking `● REC` + session elapsed timer (top-left),

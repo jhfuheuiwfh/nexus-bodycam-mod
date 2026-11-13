@@ -35,7 +35,7 @@
       <img class="marca__logo" src="{{ '/assets/img/logo.svg' | relative_url }}" alt="" width="34" height="34">
       <span class="marca__txt">
         <b>NEXUS Bodycam</b>
-        <small>Minecraft 1.20.1 · Fabric</small>
+        <small>Minecraft 1.20.1 · Fabric & Forge</small>
       </span>
     </a>
 
@@ -48,7 +48,7 @@
     </nav>
 
     <div class="topo__acoes">
-      <a class="botao botao--primario" href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/releases/latest" data-download-latest rel="noopener">
+      <a class="botao botao--primario" href="#download-modal" data-download-trigger aria-haspopup="dialog" aria-controls="download-modal">
         <svg class="ico" aria-hidden="true"><use href="#ico-baixar"></use></svg>
         Download
       </a>
@@ -70,7 +70,7 @@
       <img class="marca__logo" src="{{ '/assets/img/logo.svg' | relative_url }}" alt="" width="34" height="34">
       <p>
         <b>NEXUS Bodycam</b><br>
-        <span class="fraco">v1.4.3+1.20.1 · GPL-3.0 · client-side</span>
+        <span class="fraco"><span data-version-label>v1.5.0+1.20.1</span> · GPL-3.0 · client-side</span>
       </p>
       <p class="rodape__aviso">
         <svg class="ico" aria-hidden="true"><use href="#ico-aviso"></use></svg>
@@ -88,7 +88,7 @@
 
     <div class="rodape__col">
       <h3>Project</h3>
-      <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/releases/latest" data-download-latest rel="noopener">Download</a>
+      <a href="#download-modal" data-download-trigger aria-haspopup="dialog" aria-controls="download-modal">Download</a>
       <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/issues" rel="noopener">Issues</a>
       <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/wiki" rel="noopener">Wiki</a>
       <a href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/blob/main/AI-TRANSPARENCY.md" rel="noopener">AI transparency</a>
@@ -108,6 +108,55 @@
     Not affiliated with Realistic-Grass or any other cancelled mods.
   </p>
 </footer>
+
+<dialog class="download-modal" id="download-modal" aria-labelledby="download-modal-title" aria-describedby="download-modal-description">
+  <div class="download-modal__panel">
+    <a class="download-modal__close" href="#" data-download-close aria-label="Close download options">
+      <span aria-hidden="true">&times;</span>
+    </a>
+
+    <div class="download-modal__intro">
+      <span class="download-modal__eyebrow">
+        <svg class="ico" aria-hidden="true"><use href="#ico-baixar"></use></svg>
+        Latest builds
+      </span>
+      <h2 id="download-modal-title">Choose your loader</h2>
+      <p id="download-modal-description">
+        Download the newest NEXUS Bodycam release for Minecraft 1.20.1.
+        Both options start the file download immediately.
+      </p>
+    </div>
+
+    <div class="download-modal__options" aria-label="Download options">
+      <a class="download-option" id="download-fabric" data-download-option="fabric"
+         href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/releases/download/v1.5.0%2B1.20.1/NEXUS-bodycam-1.5.0-1.20.1-fabric.jar"
+         rel="noopener">
+        <span class="download-option__badge" aria-hidden="true">F</span>
+        <span class="download-option__copy">
+          <strong>Download Fabric</strong>
+          <small>Fabric Loader ≥ 0.15.11 · Fabric API</small>
+        </span>
+        <span class="download-option__version" data-loader-version="fabric">v1.5.0+1.20.1</span>
+      </a>
+
+      <a class="download-option" id="download-forge" data-download-option="forge"
+         href="https://github.com/jhfuheuiwfh/nexus-bodycam-mod/releases/download/v1.5.0%2B1.20.1-forge/NEXUS-bodycam-1.5.0%2B1.20.1-forge.jar"
+         rel="noopener">
+        <span class="download-option__badge" aria-hidden="true">FG</span>
+        <span class="download-option__copy">
+          <strong>Download Forge</strong>
+          <small>Minecraft Forge ≥ 47.2.0</small>
+        </span>
+        <span class="download-option__version" data-loader-version="forge">v1.5.0+1.20.1</span>
+      </a>
+    </div>
+
+    <p class="download-modal__note">
+      <svg class="ico" aria-hidden="true"><use href="#ico-aviso"></use></svg>
+      Minecraft 1.20.1 · Java 17+ · client-side only
+    </p>
+  </div>
+</dialog>
 
 <script src="{{ '/assets/js/site.js' | relative_url }}" defer></script>
 </body>
