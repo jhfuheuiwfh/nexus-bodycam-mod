@@ -20,6 +20,10 @@ Chest-mounted camera, breathing you can hear, lens effects and full weapon reali
 
 [Install](#installation) · [Build](#building-from-source) · [Configuration](#configuration) · [Wiki](../../wiki) · [Issues](../../issues) · [AI disclosure](AI-TRANSPARENCY.md) · [Site](https://jhfuheuiwfh.github.io/nexus-bodycam-mod/)
 
+# **Want to support me? Buy me a Ko-Fi:**
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V2T42AS7RJ)
+
 </div>
 
 ---
